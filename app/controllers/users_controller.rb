@@ -9,18 +9,13 @@ rescue_from ActiveRecord::RecordInvalid, with: :render_unprocessable_entity_resp
     end
 
     def show
-        user = find_user
-        render json: user
+        render json: current_user
     end
 
     def create
-        user = User.create(user_params)
-        if user.valid?
-            session[:user_id] = user.id
-            render json: user, status: :created
-        else
-            render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
-        end
+        user = User.create!(user_params)
+        session[:user_id] = user.id
+        render json: user, status: :created
     end
 
     def update
@@ -36,7 +31,7 @@ rescue_from ActiveRecord::RecordInvalid, with: :render_unprocessable_entity_resp
     end
 
     def user_params
-        params.permit(:username, :password)
+        params.permit(:email, :password)
     end
 
     def render_not_found_response
