@@ -8,22 +8,20 @@ import React, { useContext } from "react";
 import Login from "./Login";
 import AccountCreate from "./AccountCreate";
 import Items from "./Items";
-
-
+import Createbuild from "./Createbuild";
 
 
 function App() {
   const [theme, colorMode] = useMode();
   const { user } = useContext(MyContext);
+  console.log(user)
 
-  
-  
-  
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <div className="app">
+        <div className="app"
+        >
           <Sidebar />
           <main className="content">
           <Topbar />
@@ -33,8 +31,8 @@ function App() {
                 <>
                   <Route path="/AccountCreate" element={<AccountCreate />} />
                   <Route path="/Items" element={<Items />} />
+                  <Route path={`/${user.email}/create`} element={<Createbuild />} />
                   {/* <Route path="/admin" element={<AdminDashboard />} />
-                  <Route path="/admin/team" element={<Team />} />
                   <Route path="/admin/team/assign" element={<Assign />} />
                   <Route path="/contacts" element={<Contacts />} />
                   <Route path="/admin/projects" element={<Projects />} />

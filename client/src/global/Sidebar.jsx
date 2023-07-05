@@ -13,8 +13,8 @@ import Heros from "@mui/icons-material/Groups2";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
 import ItemsIcon from "@mui/icons-material/HealthAndSafety";
-import React, { useContext } from "react";
 import logo from "/home/aizen/development/code/phase5/phase5-project/client/src/pics/countess.webp";
+import React, { useContext } from "react";
 import { MyContext } from "../MyContext";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
@@ -41,13 +41,14 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
 const Sidebar = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const { handleLogoutClick, user } = useContext(MyContext);
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const { handleLogoutClick, user, setIsCollapsed, isCollapsed } = useContext(MyContext);
+  // const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
 
   return (
     <Box
       position="fixed"
+      zIndex={9999}
       top={0}
       left={0}
       bottom={0}
@@ -184,8 +185,8 @@ const Sidebar = () => {
                   setSelected={setSelected}
                 />
                 <Item
-                  title="Manage Team"
-                  to="/admin/team"
+                  title="Create Build"
+                  to={`/${user.email}/create`}
                   icon={<PeopleOutlinedIcon />}
                   selected={selected}
                   setSelected={setSelected}

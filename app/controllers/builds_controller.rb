@@ -43,7 +43,7 @@ class BuildsController < ApplicationController
     end
 
     def build_params
-        params.permit(:name, :description, :user_id)
+        params.permit(:name, :title, :info, :hero, :user_id)
     end
 
     def render_not_found_response

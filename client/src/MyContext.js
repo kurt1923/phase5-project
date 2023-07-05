@@ -6,7 +6,9 @@ const MyContext = React.createContext();
 function MyProvider({ children }) {
   const [user, setUser] = useState(null);
   const [items, setItems] = useState([]);
+  const [builds, setBuilds] = useState([]);
   const navigate = useNavigate();
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
   useEffect(() => {
     fetch("/me").then((res) => {
@@ -24,6 +26,13 @@ function MyProvider({ children }) {
       .then((data) => setItems(data));
   }, []);
 
+  useEffect(() => {
+    fetch("/builds")
+      .then((res) => res.json())
+      .then((data) => setBuilds(data));
+  }, []);
+
+
   function handleLogoutClick() {
     fetch("/logout", { method: "DELETE" }).then((r) => {
       if (r.ok) {
@@ -32,11 +41,11 @@ function MyProvider({ children }) {
     });
     navigate("/login");
   }
-
+  
   console.log(user);
 
   return (
-    <MyContext.Provider value={{ user, setUser, handleLogoutClick, items }}>
+    <MyContext.Provider value={{ user, setUser, handleLogoutClick, items, isCollapsed, setIsCollapsed }}>
       {children}
     </MyContext.Provider>
   );
