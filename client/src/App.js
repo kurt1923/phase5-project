@@ -13,8 +13,8 @@ import Createbuild from "./Createbuild";
 
 function App() {
   const [theme, colorMode] = useMode();
-  const { user } = useContext(MyContext);
-  console.log(user)
+  const { user, builds } = useContext(MyContext);
+  
 
   return (
     <ColorModeContext.Provider value={colorMode}>
@@ -31,7 +31,7 @@ function App() {
                 <>
                   <Route path="/AccountCreate" element={<AccountCreate />} />
                   <Route path="/Items" element={<Items />} />
-                  <Route path={`/${user.email}/create`} element={<Createbuild />} />
+                  <Route path={`/builds/create`} element={<Createbuild />} />
                   {/* <Route path="/admin" element={<AdminDashboard />} />
                   <Route path="/admin/team/assign" element={<Assign />} />
                   <Route path="/contacts" element={<Contacts />} />

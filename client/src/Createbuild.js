@@ -15,12 +15,15 @@ import { useState } from "react";
 import React, { useContext } from "react";
 import { MyContext } from "./MyContext";
 import background from "./pics/predwallpaper1.jpg";
+import ItemsComp from "./ItemsComp";
 
 const Createbuild = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const isNonMobile = useMediaQuery("(min-width:600px)");
-  const { user, isCollapsed } = useContext(MyContext);
+  const { user, isCollapsed, addNewBuild, builds } = useContext(MyContext);
+  // const [currentBuild, setCurrentBuild] = useState(null);
+  const [selectedItemIds, setSelectedItemIds] = useState([]);
   const navigate = useNavigate();
   const [error, setError] = useState(null);
   const initialValues = {
@@ -39,10 +42,13 @@ const Createbuild = () => {
       body: JSON.stringify(values),
     }).then((res) => {
       if (res.ok) {
-        res.json().then((json) => {
-          resetForm();
-          //   navigate("/builds");
+        res.json().then((newBuild) => {
+          // setCurrentBuild(newBuild); // going to need some state for editing..
+          //going to need a link to finish the items
+          addNewBuild(newBuild);
         });
+        // resetForm();
+        //   navigate("/builds");
       } else {
         res.json().then((json) => {
           setError(json.errors);
@@ -50,7 +56,19 @@ const Createbuild = () => {
       }
     });
   }
-
+  const handleCardClick = (itemId) => {
+    if (selectedItemIds.includes(itemId)) {
+      // Deselect item if already selected
+      setSelectedItemIds(selectedItemIds.filter((id) => id !== itemId));
+    } else {
+      // Select item if not already selected and there are less than 6 selected items
+      if (selectedItemIds.length < 6) {
+        setSelectedItemIds([...selectedItemIds, itemId]);
+      }
+    }
+  };
+  console.log(user.builds);
+  console.log(selectedItemIds)
   return (
     <Box
       m="20px"
@@ -85,14 +103,14 @@ const Createbuild = () => {
           <Form onSubmit={handleSubmit}>
             <Box
               position="relative"
-              backgroundColor="rgba(0, 0, 0, 0.7)" // transparent background color
+              backgroundColor="rgba(0, 0, 0, 0.6)" // transparent background color
               borderRadius={2}
               p={3}
               mx={2}
               mt={2}
               boxShadow={1}
-            //   backdropfilter="blur(1000px)" // Add a blur filter
-            //   zIndex={1}
+              //   backdropfilter="blur(1000px)" // Add a blur filter
+              //   zIndex={1}
             >
               <TextField
                 fullWidth
@@ -105,7 +123,12 @@ const Createbuild = () => {
                 name="title"
                 error={!!touched.title && !!errors.title}
                 helperText={touched.title && errors.title}
-                sx={{ gridColumn: "span 2", color: colors.primary[100], marginBottom: "10px", fontWeight: "bolder" }}
+                sx={{
+                  gridColumn: "span 2",
+                  color: colors.primary[100],
+                  marginBottom: "10px",
+                  fontWeight: "bolder",
+                }}
               />
               <TextField
                 fullWidth
@@ -121,7 +144,11 @@ const Createbuild = () => {
                 name="info"
                 error={!!touched.info && !!errors.info}
                 helperText={touched.info && errors.info}
-                sx={{ gridColumn: "span 2", color: colors.primary[100], marginBottom: "10px" }}
+                sx={{
+                  gridColumn: "span 2",
+                  color: colors.primary[100],
+                  marginBottom: "10px",
+                }}
               />
               <TextField
                 name="hero"
@@ -154,7 +181,9 @@ const Createbuild = () => {
           </Form>
         )}
       </Formik>
-
+      <Box>
+        <ItemsComp handleCardClick={handleCardClick} />
+      </Box>
     </Box>
   );
 };

@@ -8,9 +8,10 @@ class BuildsController < ApplicationController
     end
 
     def show
-        build = find_build
-        render json: build
+        builds = find_build
+        render json: builds
     end
+
 
     def create
         user = find_user

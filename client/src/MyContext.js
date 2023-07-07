@@ -42,10 +42,19 @@ function MyProvider({ children }) {
     navigate("/login");
   }
   
-  console.log(user);
+  function addNewBuild(newBuild) {
+    setBuilds(prevBuilds => [...prevBuilds, newBuild]);
+    setUser(prevUser => {
+      const updatedUser = { ...prevUser };
+      updatedUser.builds.push(newBuild);
+      return updatedUser;
+    });
+  }
+  
+
 
   return (
-    <MyContext.Provider value={{ user, setUser, handleLogoutClick, items, isCollapsed, setIsCollapsed }}>
+    <MyContext.Provider value={{ user, setUser, handleLogoutClick, items, isCollapsed, setIsCollapsed, addNewBuild, builds }}>
       {children}
     </MyContext.Provider>
   );

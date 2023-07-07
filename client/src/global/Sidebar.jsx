@@ -186,7 +186,7 @@ const Sidebar = () => {
                 />
                 <Item
                   title="Create Build"
-                  to={`/${user.email}/create`}
+                  to={`/builds/create`}
                   icon={<PeopleOutlinedIcon />}
                   selected={selected}
                   setSelected={setSelected}
