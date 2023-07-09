@@ -5,10 +5,12 @@ import {
   Button,
   TextField,
   MenuItem,
+  Grid,
+  CardContent,
 } from "@mui/material";
 import { tokens } from "./theme";
 import Header from "./Header";
-import { Formik, Form } from "formik";
+import { Formik, Form, FieldArray } from "formik";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -16,16 +18,22 @@ import React, { useContext } from "react";
 import { MyContext } from "./MyContext";
 import background from "./pics/predwallpaper1.jpg";
 import ItemsComp from "./ItemsComp";
+import BuildItems from "./BuildItems";
+import image from "./pics/countess.webp";
 
 const Createbuild = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const isNonMobile = useMediaQuery("(min-width:600px)");
-  const { user, isCollapsed, addNewBuild, builds } = useContext(MyContext);
-  // const [currentBuild, setCurrentBuild] = useState(null);
+  const { user, isCollapsed, addNewBuild, builds, items } =
+    useContext(MyContext);
+  const [currentBuildId, setCurrentBuildId] = useState(null);
   const [selectedItemIds, setSelectedItemIds] = useState([]);
+  const [selectedItems, setSelectedItems] = useState([]);
   const navigate = useNavigate();
-  const [error, setError] = useState(null);
+  const [error, setError] = useState([]);
+  const [selectedBuildItem, setSelectedBuildItem] = useState([]);
+  const [buildItems, setBuildItems] = useState([]); //this is going to be an array of objects [{build_id: 1, item_id: 1}, {build_id: 1, item_id: 2}
   const initialValues = {
     title: "",
     hero: "Gideon",
@@ -34,41 +42,98 @@ const Createbuild = () => {
   };
 
   function handleFormSubmit(values, { resetForm }) {
+    console.log("handleFormSubmit called");
+
     fetch("/builds", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(values),
-    }).then((res) => {
-      if (res.ok) {
-        res.json().then((newBuild) => {
-          // setCurrentBuild(newBuild); // going to need some state for editing..
-          //going to need a link to finish the items
-          addNewBuild(newBuild);
+    })
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        } else {
+          throw new Error("Build submission failed");
+        }
+      })
+      .then((newBuild) => {
+        setCurrentBuildId(newBuild.id);
+
+        // Create 6 new build_item models with blank item_id fields
+        const buildItemIdList = Array.from({ length: 6 }).map(() => {
+          const randomItemId = Math.floor(Math.random() * 50) + 1;
+          return fetch("/build_items", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              build_id: newBuild.id,
+              item_id: randomItemId,
+            }),
+          })
+            .then((res) => res.json())
+            .then((newBuildItem) => newBuildItem);
         });
-        // resetForm();
-        //   navigate("/builds");
-      } else {
-        res.json().then((json) => {
-          setError(json.errors);
+
+        // Wait for all build_item creations to complete
+        Promise.all(buildItemIdList).then((buildItems) => {
+          // Update the buildItems state with the newly created build_items
+          setBuildItems(buildItems);
+
+          // Perform any further actions with the created build_items if needed
+          console.log("Created build_items:", buildItems);
         });
-      }
-    });
+        setCurrentBuildId(newBuild.id);
+        addNewBuild(newBuild);
+      })
+      .catch((error) => {
+        setError(error.message);
+      });
   }
+
+  console.log(currentBuildId);
+  console.log(user.builds);
+  console.log(selectedItemIds);
+  console.log(selectedItems);
+  console.log(buildItems);
+  // const handleCardClick = (itemId) => {
+  //   if (selectedItemIds.includes(itemId)) {
+  //     // Deselect item if already selected
+  //     setSelectedItemIds(selectedItemIds.filter((id) => id !== itemId));
+  //   } else {
+  //     // Select item if not already selected and there are less than 6 selected items
+  //     if (selectedItemIds.length < 6) {
+  //       setSelectedItemIds([...selectedItemIds, itemId]);
+  //     }
+  //   }
+  // };
+  // const handleCardClick = (itemId) => {
+  //   if (selectedItemIds.includes(itemId)) {
+  //     // Deselect item if already selected
+  //     setSelectedItemIds(selectedItemIds.filter((id) => id !== itemId));
+  //     setSelectedItems(selectedItems.filter((item) => item.id !== itemId));
+  //   } else {
+  //     // Select item if not already selected and there are less than 6 selected items
+  //     if (selectedItemIds.length < 6) {
+  //       const selectedItem = items.find((item) => item.id === itemId);
+  //       setSelectedItemIds([...selectedItemIds, itemId]);
+  //       setSelectedItems([...selectedItems, selectedItem]);
+  //     }
+  //   }
+  // };
   const handleCardClick = (itemId) => {
-    if (selectedItemIds.includes(itemId)) {
-      // Deselect item if already selected
-      setSelectedItemIds(selectedItemIds.filter((id) => id !== itemId));
+    if (selectedItemIds === itemId) {
+      // Deselect the item if it's already selected
+      setSelectedItemIds(null);
     } else {
-      // Select item if not already selected and there are less than 6 selected items
-      if (selectedItemIds.length < 6) {
-        setSelectedItemIds([...selectedItemIds, itemId]);
-      }
+      // Select the clicked item
+      setSelectedItemIds(itemId);
     }
   };
-  console.log(user.builds);
-  console.log(selectedItemIds)
+
   return (
     <Box
       m="20px"
@@ -86,7 +151,12 @@ const Createbuild = () => {
         position: "relative", //not sure if i need this
       }}
     >
-      <Header title="Create a Build" subtitle="Create a build" />
+      <Header
+        title="Create a Build"
+        subtitle={
+          currentBuildId ? "Build ID: " + currentBuildId : "Create a build"
+        }
+      />
       <Formik
         onSubmit={handleFormSubmit}
         initialValues={initialValues}
@@ -168,21 +238,59 @@ const Createbuild = () => {
                 <MenuItem value="Drongo">Drongo</MenuItem>
                 <MenuItem value="Grux">Grux</MenuItem>
               </TextField>
-              <Box display="flex" justifyContent="center" m="10px" p="10px">
-                <Button
-                  type="submit"
-                  sx={{ backgroundColor: colors.blueAccent[300] }}
-                  variant="contained"
-                >
-                  Create Build
-                </Button>
-              </Box>
+              {currentBuildId === null ? (
+                <Box display="flex" justifyContent="center" m="10px" p="10px">
+                  <Button
+                    type="submit"
+                    sx={{ backgroundColor: colors.blueAccent[300] }}
+                    variant="contained"
+                  >
+                    Create Build
+                  </Button>
+                </Box>
+              ) : null}
             </Box>
           </Form>
         )}
       </Formik>
+      {/* <Header title="Add Build Items" subtitle="All Items" /> */}
+      <BuildItems
+        buildItems={buildItems}
+        items={items}
+        selectedBuildItem={selectedBuildItem}
+        setSelectedBuildItem={setSelectedBuildItem}
+      />
+      <Box mt={4}>
+        {/* <Grid container spacing={2} mr={8} ml={8} sx={{ flexWrap: "wrap" }}>
+          {selectedItems.map((item) => (
+            <Grid key={item.id}>
+              <Box
+                sx={{
+                  border: "1px solid #e1e2fe",
+                  backgroundColor: "#e1e2fe",
+                  position: "relative",
+                  width: "100px",
+                  height: "100px",
+                  margin: "10px",
+                  paddingTop: "80%", // 1:1 Aspect Ratio
+                  overflow: "hidden",
+                }}
+              >
+                <CardContent align="center">
+                  <Typography style={{ color: "#ffffff" }}>
+                    {item.name}
+                  </Typography>
+                </CardContent>
+              </Box>
+            </Grid>
+          ))}
+        </Grid> */}
+      </Box>
       <Box>
-        <ItemsComp handleCardClick={handleCardClick} />
+        <ItemsComp
+          handleCardClick={handleCardClick}
+          selectedItemIds={selectedItemIds}
+        />
       </Box>
     </Box>
   );

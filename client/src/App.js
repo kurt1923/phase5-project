@@ -27,10 +27,10 @@ function App() {
           <Topbar />
             <Routes>
               <Route path="/"></Route>
+              <Route path="/Items" element={<Items />} />
               {user !== null || undefined ? (
                 <>
                   <Route path="/AccountCreate" element={<AccountCreate />} />
-                  <Route path="/Items" element={<Items />} />
                   <Route path={`/builds/create`} element={<Createbuild />} />
                   {/* <Route path="/admin" element={<AdminDashboard />} />
                   <Route path="/admin/team/assign" element={<Assign />} />

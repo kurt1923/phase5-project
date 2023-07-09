@@ -18,10 +18,10 @@ import { useContext } from "react";
 import React, { useState } from "react";
 import image from "./pics/countess.webp";
 
-const ItemsComp = ( {handleCardClick} ) => {
+const ItemsComp = ( {handleCardClick, selectedItemIds, isItemsList } ) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const { items, user } = useContext(MyContext);
+  const { items, user} = useContext(MyContext);
   const [hoveredItemId, setHoveredItemId] = useState(null);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -223,6 +223,10 @@ const ItemsComp = ( {handleCardClick} ) => {
                   onMouseEnter={() => handleMouseEnter(item.id)}
                   onMouseLeave={handleMouseLeave}
                   onClick={() => handleCardClick(item.id)}
+                  style={{
+                    // Add selected styles if the item is selected
+                    boxShadow: selectedItemIds === item.id ? '0 0 6px 6px gold' : 'none',
+                  }}
                 >
                   <CardContent align="center">
                     {/* <Typography style={{ color: "#ffffff" }}>
@@ -275,7 +279,6 @@ const ItemsComp = ( {handleCardClick} ) => {
                       {Object.entries(item).map(([key, value]) => {
                         if (
                           key !== "id" &&
-                          key !== "name" &&
                           key !== "category" &&
                           value !== 0
                         ) {

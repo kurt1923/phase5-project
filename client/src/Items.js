@@ -5,11 +5,18 @@ import ItemsComp from "./ItemsComp";
 import { useContext } from "react";
 import Header from "./Header";
 import background from "./pics/predwallpaper1.jpg";
+import React, { useState } from "react";
 
 const Items = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const { isCollapsed } = useContext(MyContext);
+  // const [isItemsList, setIsItemsList] = useState(true); //maybe a boolean for styling?
+  const [selectedItemIds, setSelectedItemIds] = useState([]);
+
+  const handleCardClick = (itemId) => {
+    console.log(itemId)
+  };
 
   return (
     <Box
@@ -28,7 +35,7 @@ const Items = () => {
       }}
     >
       <Header title="Items" subtitle="All Items" />
-      <ItemsComp />
+      <ItemsComp handleCardClick={handleCardClick} selectedItemIds={selectedItemIds} />
     </Box>
   );
 };

@@ -13,6 +13,7 @@ class BuildItemsController < ApplicationController
     end
 
     def create
+        puts build_item_params
         build = find_build
         build_item = build.build_items.create!(build_item_params)
         render json: build_item, status: :created

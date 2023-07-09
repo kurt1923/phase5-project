@@ -42,14 +42,13 @@ function MyProvider({ children }) {
     navigate("/login");
   }
   
-  function addNewBuild(newBuild) {
-    setBuilds(prevBuilds => [...prevBuilds, newBuild]);
-    setUser(prevUser => {
-      const updatedUser = { ...prevUser };
-      updatedUser.builds.push(newBuild);
-      return updatedUser;
-    });
-  }
+function addNewBuild(newBuild) {
+  setBuilds(prevBuilds => [...prevBuilds, newBuild]);
+  setUser(prevUser => ({
+    ...prevUser,
+    builds: [...prevUser.builds, newBuild]
+  }));
+}
   
 
 
