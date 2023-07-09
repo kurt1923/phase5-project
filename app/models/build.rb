@@ -3,12 +3,5 @@ class Build < ApplicationRecord
     has_many :items, through: :build_items
     belongs_to :user
 
-    # validate :validate_build_items_count
-    # private
 
-    # def validate_build_items_count
-    #   if build_items.size > 7
-    #     errors.add(:build_items, 'cannot exceed 7')
-    #   end
-    # end
 end

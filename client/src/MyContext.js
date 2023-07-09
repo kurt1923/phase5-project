@@ -49,11 +49,24 @@ function addNewBuild(newBuild) {
     builds: [...prevUser.builds, newBuild]
   }));
 }
+
+function addNewBuildItem(newBuildItem) {
+  setUser((prevUser) => {
+    const updatedBuilds = prevUser.builds.map((build) => {
+      if (build.id === newBuildItem.build_id) {
+        const buildItems = [...build.build_items, newBuildItem];
+        return { ...build, build_items: buildItems };
+      }
+      return build;
+    });
+    return { ...prevUser, builds: updatedBuilds };
+  });
+}
   
 
 
   return (
-    <MyContext.Provider value={{ user, setUser, handleLogoutClick, items, isCollapsed, setIsCollapsed, addNewBuild, builds }}>
+    <MyContext.Provider value={{ user, setUser, handleLogoutClick, items, isCollapsed, setIsCollapsed, addNewBuild, builds, addNewBuildItem }}>
       {children}
     </MyContext.Provider>
   );

@@ -25,11 +25,10 @@ const Createbuild = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const isNonMobile = useMediaQuery("(min-width:600px)");
-  const { user, isCollapsed, addNewBuild, builds, items } =
+  const { user, isCollapsed, addNewBuild, builds, items, addNewBuildItem } =
     useContext(MyContext);
   const [currentBuildId, setCurrentBuildId] = useState(null);
   const [selectedItemIds, setSelectedItemIds] = useState([]);
-  const [selectedItems, setSelectedItems] = useState([]);
   const navigate = useNavigate();
   const [error, setError] = useState([]);
   const [selectedBuildItem, setSelectedBuildItem] = useState([]);
@@ -41,9 +40,61 @@ const Createbuild = () => {
     user_id: user.id,
   };
 
+  // function handleFormSubmit(values, { resetForm }) {
+  //   console.log("handleFormSubmit called");
+
+  //   fetch("/builds", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify(values),
+  //   })
+  //     .then((res) => {
+  //       if (res.ok) {
+  //         return res.json();
+  //       } else {
+  //         throw new Error("Build submission failed");
+  //       }
+  //     })
+  //     .then((newBuild) => {
+  //       setCurrentBuildId(newBuild.id);
+
+  //       // Create 6 new build_item models with blank item_id fields
+  //       const buildItemIdList = Array.from({ length: 6 }).map(() => {
+  //         const randomItemId = Math.floor(Math.random() * 50) + 1;
+  //         return fetch("/build_items", {
+  //           method: "POST",
+  //           headers: {
+  //             "Content-Type": "application/json",
+  //           },
+  //           body: JSON.stringify({
+  //             build_id: newBuild.id,
+  //             item_id: randomItemId,
+  //           }),
+  //         })
+  //           .then((res) => res.json())
+  //           .then((newBuildItem) => newBuildItem);
+  //       });
+
+  //       // Wait for all build_item creations to complete
+  //       Promise.all(buildItemIdList).then((buildItems) => {
+  //         // Update the buildItems state with the newly created build_items
+  //         setBuildItems(buildItems);
+
+  //         // Perform any further actions with the created build_items if needed
+  //         console.log("Created build_items:", buildItems);
+  //       });
+  //       setCurrentBuildId(newBuild.id);
+  //       addNewBuild(newBuild);        
+  //     })
+  //     .catch((error) => {
+  //       setError(error.message);
+  //     });
+  // }
   function handleFormSubmit(values, { resetForm }) {
     console.log("handleFormSubmit called");
-
+  
     fetch("/builds", {
       method: "POST",
       headers: {
@@ -60,7 +111,7 @@ const Createbuild = () => {
       })
       .then((newBuild) => {
         setCurrentBuildId(newBuild.id);
-
+  
         // Create 6 new build_item models with blank item_id fields
         const buildItemIdList = Array.from({ length: 6 }).map(() => {
           const randomItemId = Math.floor(Math.random() * 50) + 1;
@@ -75,17 +126,18 @@ const Createbuild = () => {
             }),
           })
             .then((res) => res.json())
-            .then((newBuildItem) => newBuildItem);
+            .then((newBuildItem) => {
+              addNewBuildItem(newBuildItem); // Call the addBuildItem function
+              return newBuildItem;
+            });
         });
-
+  
         // Wait for all build_item creations to complete
         Promise.all(buildItemIdList).then((buildItems) => {
-          // Update the buildItems state with the newly created build_items
-          setBuildItems(buildItems);
-
           // Perform any further actions with the created build_items if needed
           console.log("Created build_items:", buildItems);
         });
+  
         setCurrentBuildId(newBuild.id);
         addNewBuild(newBuild);
       })
@@ -94,45 +146,44 @@ const Createbuild = () => {
       });
   }
 
+  const handleCardClick = (itemId) => {
+    const selectedBuildItemId = selectedBuildItem.id;
+  
+    const updatedBuildItems = buildItems.map((buildItem) => {
+      if (buildItem === selectedBuildItem) {
+        return { ...buildItem, item_id: itemId };
+      }
+      return buildItem;
+    });
+  
+    setBuildItems(updatedBuildItems);
+    console.log(itemId)
+    fetch(`/build_items/${selectedBuildItemId}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ item_id: itemId }),
+    })
+      .then((res) => {
+        if (res.ok) {
+          console.log('Build item updated successfully');
+        } else {
+          throw new Error('Failed to update build item');
+        }
+      })
+      .catch((error) => {
+        console.error('Error updating build item:', error);
+      });
+  };
+
+  
+  
   console.log(currentBuildId);
   console.log(user.builds);
   console.log(selectedItemIds);
-  console.log(selectedItems);
+  console.log(selectedBuildItem.id);
   console.log(buildItems);
-  // const handleCardClick = (itemId) => {
-  //   if (selectedItemIds.includes(itemId)) {
-  //     // Deselect item if already selected
-  //     setSelectedItemIds(selectedItemIds.filter((id) => id !== itemId));
-  //   } else {
-  //     // Select item if not already selected and there are less than 6 selected items
-  //     if (selectedItemIds.length < 6) {
-  //       setSelectedItemIds([...selectedItemIds, itemId]);
-  //     }
-  //   }
-  // };
-  // const handleCardClick = (itemId) => {
-  //   if (selectedItemIds.includes(itemId)) {
-  //     // Deselect item if already selected
-  //     setSelectedItemIds(selectedItemIds.filter((id) => id !== itemId));
-  //     setSelectedItems(selectedItems.filter((item) => item.id !== itemId));
-  //   } else {
-  //     // Select item if not already selected and there are less than 6 selected items
-  //     if (selectedItemIds.length < 6) {
-  //       const selectedItem = items.find((item) => item.id === itemId);
-  //       setSelectedItemIds([...selectedItemIds, itemId]);
-  //       setSelectedItems([...selectedItems, selectedItem]);
-  //     }
-  //   }
-  // };
-  const handleCardClick = (itemId) => {
-    if (selectedItemIds === itemId) {
-      // Deselect the item if it's already selected
-      setSelectedItemIds(null);
-    } else {
-      // Select the clicked item
-      setSelectedItemIds(itemId);
-    }
-  };
 
   return (
     <Box
@@ -170,7 +221,7 @@ const Createbuild = () => {
           handleChange,
           handleSubmit,
         }) => (
-          <Form onSubmit={handleSubmit}>
+          <Form name="buildForm" onSubmit={handleSubmit}>
             <Box
               position="relative"
               backgroundColor="rgba(0, 0, 0, 0.6)" // transparent background color

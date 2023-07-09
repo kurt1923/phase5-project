@@ -29,7 +29,7 @@ const BuildItems = ({ buildItems, items, selectedBuildItem, setSelectedBuildItem
           setSelectedBuildItem(itemId);
         }
     };
-    console.log(selectedBuildItem)
+    
     const formatAttributeKey = (key) => {
     const words = key.split("_");
     const capitalizedWords = words.map(
@@ -74,10 +74,10 @@ const BuildItems = ({ buildItems, items, selectedBuildItem, setSelectedBuildItem
                     }}
                     onMouseEnter={() => handleMouseEnter(buildItem.item_id)}
                     onMouseLeave={handleMouseLeave}
-                    onClick={() => handleCardClick(buildItem.id)}
+                    onClick={() => handleCardClick(buildItem)}
                     style={{
                         // Add selected styles if the item is selected
-                        boxShadow: selectedBuildItem === buildItem.item_id ? '0 0 6px 6px red' : 'none',
+                        boxShadow: selectedBuildItem === buildItem ? '0 0 6px 6px red' : 'none',
                       }}
                   >
                     <CardContent align="center">

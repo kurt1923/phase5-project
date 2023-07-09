@@ -13,18 +13,20 @@ class BuildItemsController < ApplicationController
     end
 
     def create
-        puts build_item_params
+        # puts build_item_params
         build = find_build
         build_item = build.build_items.create!(build_item_params)
         render json: build_item, status: :created
     end
 
     def update
-        build = find_build
-        build_item = build.build_items.find(params[:id])
+        puts params[:id]
+        build_item = find_build_item
+        puts build_item.inspect
         build_item.update!(build_item_params)
         render json: build_item
-    end
+      end
+
 
     def destroy
         build = find_build
