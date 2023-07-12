@@ -9,6 +9,7 @@ function MyProvider({ children }) {
   const [builds, setBuilds] = useState([]);
   const navigate = useNavigate();
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [currentBuild, setCurrentBuild] = useState([]);
 
   useEffect(() => {
     fetch("/me").then((res) => {
@@ -31,8 +32,7 @@ function MyProvider({ children }) {
       .then((res) => res.json())
       .then((data) => setBuilds(data));
   }, []);
-
-
+  console.log(builds);
   function handleLogoutClick() {
     fetch("/logout", { method: "DELETE" }).then((r) => {
       if (r.ok) {
@@ -41,32 +41,59 @@ function MyProvider({ children }) {
     });
     navigate("/login");
   }
-  
-function addNewBuild(newBuild) {
-  setBuilds(prevBuilds => [...prevBuilds, newBuild]);
-  setUser(prevUser => ({
-    ...prevUser,
-    builds: [...prevUser.builds, newBuild]
-  }));
-}
 
-function addNewBuildItem(newBuildItem) {
-  setUser((prevUser) => {
-    const updatedBuilds = prevUser.builds.map((build) => {
-      if (build.id === newBuildItem.build_id) {
-        const buildItems = [...build.build_items, newBuildItem];
-        return { ...build, build_items: buildItems };
-      }
-      return build;
+  function addNewBuild(newBuild) {
+    setBuilds((prevBuilds) => [...prevBuilds, newBuild]);
+    setUser((prevUser) => ({
+      ...prevUser,
+      builds: [...prevUser.builds, newBuild],
+    }));
+  }
+
+  
+//check later if i can use currentBuild instead of updatedBuild
+  function addNewBuildItem(updatedBuild) {
+    setBuilds((prevBuilds) => {
+      const updatedBuilds = prevBuilds.map((build) => {
+        if (build.id === updatedBuild.id) {
+          return updatedBuild;
+        }
+        return build;
+      });
+      return updatedBuilds;
     });
-    return { ...prevUser, builds: updatedBuilds };
-  });
-}
-  
+  }
 
+  function handleBuildEdit(updatedBuild) {
+    setBuilds((prevBuilds) => {
+      const updatedBuilds = prevBuilds.map((build) => {
+        if (build.id === updatedBuild.id) {
+          return updatedBuild;
+        }
+        return build;
+      });
+      return updatedBuilds;
+    });
+  }
 
   return (
-    <MyContext.Provider value={{ user, setUser, handleLogoutClick, items, isCollapsed, setIsCollapsed, addNewBuild, builds, addNewBuildItem }}>
+    <MyContext.Provider
+      value={{
+        user,
+        setUser,
+        handleLogoutClick,
+        items,
+        isCollapsed,
+        setIsCollapsed,
+        addNewBuild,
+        builds,
+        setBuilds,
+        addNewBuildItem,
+        currentBuild,
+        setCurrentBuild,
+        handleBuildEdit
+      }}
+    >
       {children}
     </MyContext.Provider>
   );

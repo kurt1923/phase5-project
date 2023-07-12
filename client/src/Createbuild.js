@@ -25,76 +25,46 @@ const Createbuild = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const isNonMobile = useMediaQuery("(min-width:600px)");
-  const { user, isCollapsed, addNewBuild, builds, items, addNewBuildItem } =
-    useContext(MyContext);
-  const [currentBuildId, setCurrentBuildId] = useState(null);
+  const {
+    user,
+    setUser,
+    isCollapsed,
+    addNewBuild,
+    builds,
+    items,
+    addNewBuildItem,
+    setBuilds,
+    currentBuild,
+    setCurrentBuild,
+    handleBuildEdit,
+  } = useContext(MyContext);
   const [selectedItemIds, setSelectedItemIds] = useState([]);
   const navigate = useNavigate();
   const [error, setError] = useState([]);
   const [selectedBuildItem, setSelectedBuildItem] = useState([]);
-  const [buildItems, setBuildItems] = useState([]); //this is going to be an array of objects [{build_id: 1, item_id: 1}, {build_id: 1, item_id: 2}
-  const initialValues = {
-    title: "",
-    hero: "Gideon",
-    info: "",
-    user_id: user.id,
-  };
+  const noBuild = currentBuild.length === 0;
+  const findCurrentBuild = builds.find((build) => build.id === currentBuild);
 
-  // function handleFormSubmit(values, { resetForm }) {
-  //   console.log("handleFormSubmit called");
+  const initialValues = noBuild
+    ? {
+        title: "",
+        hero: "Gideon",
+        info: "",
+        user_id: user.id,
+      }
+    : {
+        title: findCurrentBuild.title,
+        hero: findCurrentBuild.hero,
+        info: findCurrentBuild.info,
+        user_id: findCurrentBuild.user_id,
+      };
 
-  //   fetch("/builds", {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify(values),
-  //   })
-  //     .then((res) => {
-  //       if (res.ok) {
-  //         return res.json();
-  //       } else {
-  //         throw new Error("Build submission failed");
-  //       }
-  //     })
-  //     .then((newBuild) => {
-  //       setCurrentBuildId(newBuild.id);
+  console.log(initialValues);
 
-  //       // Create 6 new build_item models with blank item_id fields
-  //       const buildItemIdList = Array.from({ length: 6 }).map(() => {
-  //         const randomItemId = Math.floor(Math.random() * 50) + 1;
-  //         return fetch("/build_items", {
-  //           method: "POST",
-  //           headers: {
-  //             "Content-Type": "application/json",
-  //           },
-  //           body: JSON.stringify({
-  //             build_id: newBuild.id,
-  //             item_id: randomItemId,
-  //           }),
-  //         })
-  //           .then((res) => res.json())
-  //           .then((newBuildItem) => newBuildItem);
-  //       });
-
-  //       // Wait for all build_item creations to complete
-  //       Promise.all(buildItemIdList).then((buildItems) => {
-  //         // Update the buildItems state with the newly created build_items
-  //         setBuildItems(buildItems);
-
-  //         // Perform any further actions with the created build_items if needed
-  //         console.log("Created build_items:", buildItems);
-  //       });
-  //       setCurrentBuildId(newBuild.id);
-  //       addNewBuild(newBuild);        
-  //     })
-  //     .catch((error) => {
-  //       setError(error.message);
-  //     });
-  // }
-  function handleFormSubmit(values, { resetForm }) {
+  //im creating a new build with 6 build_items
+  function handleFormSubmit(values) {
     console.log("handleFormSubmit called");
-  
+
     fetch("/builds", {
       method: "POST",
       headers: {
@@ -110,8 +80,8 @@ const Createbuild = () => {
         }
       })
       .then((newBuild) => {
-        setCurrentBuildId(newBuild.id);
-  
+        addNewBuild(newBuild);
+
         // Create 6 new build_item models with blank item_id fields
         const buildItemIdList = Array.from({ length: 6 }).map(() => {
           const randomItemId = Math.floor(Math.random() * 50) + 1;
@@ -124,66 +94,104 @@ const Createbuild = () => {
               build_id: newBuild.id,
               item_id: randomItemId,
             }),
-          })
-            .then((res) => res.json())
-            .then((newBuildItem) => {
-              addNewBuildItem(newBuildItem); // Call the addBuildItem function
-              return newBuildItem;
-            });
+          }).then((res) => res.json());
         });
-  
+
         // Wait for all build_item creations to complete
         Promise.all(buildItemIdList).then((buildItems) => {
-          // Perform any further actions with the created build_items if needed
+          const updatedBuild = { ...newBuild, build_items: buildItems };
+          addNewBuildItem(updatedBuild);
+
           console.log("Created build_items:", buildItems);
         });
-  
-        setCurrentBuildId(newBuild.id);
-        addNewBuild(newBuild);
+        setCurrentBuild(newBuild.id);
       })
       .catch((error) => {
         setError(error.message);
       });
   }
 
+  //this edits the current builitems by updating the item_id and then setting new state
   const handleCardClick = (itemId) => {
     const selectedBuildItemId = selectedBuildItem.id;
-  
-    const updatedBuildItems = buildItems.map((buildItem) => {
-      if (buildItem === selectedBuildItem) {
-        return { ...buildItem, item_id: itemId };
-      }
-      return buildItem;
-    });
-  
-    setBuildItems(updatedBuildItems);
-    console.log(itemId)
+
     fetch(`/build_items/${selectedBuildItemId}`, {
-      method: 'PATCH',
+      method: "PATCH",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({ item_id: itemId }),
     })
       .then((res) => {
         if (res.ok) {
-          console.log('Build item updated successfully');
+          return res.json(); // Parse the response as JSON
         } else {
-          throw new Error('Failed to update build item');
+          throw new Error("Failed to update build item");
         }
       })
+      .then((updatedBuildItem) => {
+        // Update the builds state with the updated selectedBuildItem
+        const updatedBuilds = builds.map((build) => {
+          if (build.id === currentBuild) {
+            const updatedBuildItems = build.build_items.map((buildItem) => {
+              if (buildItem.id === selectedBuildItemId) {
+                return { ...buildItem, item_id: itemId }; // Only update the item_id
+              }
+              return buildItem;
+            });
+            return {
+              ...build,
+              build_items: updatedBuildItems,
+            };
+          }
+          return build;
+        });
+
+        // Update the selectedBuildItem and builds state
+        setSelectedBuildItem([]);
+        setBuilds(updatedBuilds);
+        // setUser((prevUser) => ({
+        //   ...prevUser,
+        //   builds: updatedBuilds,
+        // }));
+      })
       .catch((error) => {
-        console.error('Error updating build item:', error);
+        console.error("Error updating build item:", error);
       });
   };
 
-  
-  
-  console.log(currentBuildId);
-  console.log(user.builds);
+  //this edits the current build by updating the title, hero, and info
+  const handleEdit = (values) => {
+    console.log("handleEdit called");
+    console.log(values);
+    fetch(`/builds/${currentBuild}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(values),
+    })
+      .then((res) => {
+        if (res.ok) {
+          return res.json(); // Parse the response as JSON
+        } else {
+          throw new Error("Failed to update build");
+        }
+      })
+      .then((updatedBuild) => {
+        // Update the builds state with the updated selectedBuildItem
+        handleBuildEdit(updatedBuild);
+      })
+      .catch((error) => {
+        console.error("Error updating build:", error);
+      });
+  };
+
+  console.log("currentbuild id", currentBuild);
+  console.log("builds state", builds);
   console.log(selectedItemIds);
-  console.log(selectedBuildItem.id);
-  console.log(buildItems);
+  console.log(selectedBuildItem);
+  console.log(findCurrentBuild);
 
   return (
     <Box
@@ -203,13 +211,15 @@ const Createbuild = () => {
       }}
     >
       <Header
-        title="Create a Build"
+        title={noBuild ? "Create Build" : `Edit: ${findCurrentBuild.title}`}
         subtitle={
-          currentBuildId ? "Build ID: " + currentBuildId : "Create a build"
+          noBuild ? "Add info and Submit, then add items" : "Edit info or Items"
         }
       />
       <Formik
-        onSubmit={handleFormSubmit}
+        onSubmit={(values) =>
+          noBuild ? handleFormSubmit(values) : handleEdit(values)
+        }
         initialValues={initialValues}
         // validationSchema={checkoutSchema}
       >
@@ -289,7 +299,7 @@ const Createbuild = () => {
                 <MenuItem value="Drongo">Drongo</MenuItem>
                 <MenuItem value="Grux">Grux</MenuItem>
               </TextField>
-              {currentBuildId === null ? (
+              {noBuild ? (
                 <Box display="flex" justifyContent="center" m="10px" p="10px">
                   <Button
                     type="submit"
@@ -299,51 +309,71 @@ const Createbuild = () => {
                     Create Build
                   </Button>
                 </Box>
-              ) : null}
+              ) : (
+                <Box display="flex" justifyContent="center" m="10px" p="10px">
+                  <Button
+                    type="submit"
+                    sx={{ backgroundColor: colors.blueAccent[300] }}
+                    variant="contained"
+                  >
+                    Submit new Build Info
+                  </Button>
+                </Box>
+              )}
             </Box>
           </Form>
         )}
       </Formik>
-      {/* <Header title="Add Build Items" subtitle="All Items" /> */}
       <BuildItems
-        buildItems={buildItems}
+        // buildItems={buildItems}
         items={items}
         selectedBuildItem={selectedBuildItem}
         setSelectedBuildItem={setSelectedBuildItem}
+        currentBuild={currentBuild}
       />
-      <Box mt={4}>
-        {/* <Grid container spacing={2} mr={8} ml={8} sx={{ flexWrap: "wrap" }}>
-          {selectedItems.map((item) => (
-            <Grid key={item.id}>
-              <Box
-                sx={{
-                  border: "1px solid #e1e2fe",
-                  backgroundColor: "#e1e2fe",
-                  position: "relative",
-                  width: "100px",
-                  height: "100px",
-                  margin: "10px",
-                  paddingTop: "80%", // 1:1 Aspect Ratio
-                  overflow: "hidden",
-                }}
-              >
-                <CardContent align="center">
-                  <Typography style={{ color: "#ffffff" }}>
-                    {item.name}
-                  </Typography>
-                </CardContent>
-              </Box>
-            </Grid>
-          ))}
-        </Grid> */}
-      </Box>
-      <Box>
-        <ItemsComp
-          handleCardClick={handleCardClick}
-          selectedItemIds={selectedItemIds}
-        />
-      </Box>
+      {selectedBuildItem.length !== 0 ? (
+        <Box>
+          <ItemsComp
+            handleCardClick={handleCardClick}
+            selectedItemIds={selectedItemIds}
+          />
+        </Box>
+      ) : (
+        <Box>
+          <Typography
+            variant="h6"
+            align="center"
+            sx={{ color: colors.grey[100] }}
+          >
+            Select an item to add to your build
+          </Typography>
+        </Box>
+      )}
     </Box>
   );
 };
 export default Createbuild;
+
+// import React, { useState, useEffect } from 'react';
+// import { useLocation, Link } from 'react-router-dom';
+
+// const MyComponent = () => {
+//   const [myState, setMyState] = useState('');
+//   const location = useLocation();
+
+//   useEffect(() => {
+//     return () => {
+//       // Reset the state when navigating away from the page
+//       setMyState('');
+//     };
+//   }, [location]);
+
+//   return (
+//     <div>
+//       <p>Current state: {myState}</p>
+//       <Link to="/other-page">Navigate</Link>
+//     </div>
+//   );
+// };
+
+// export default MyComponent;

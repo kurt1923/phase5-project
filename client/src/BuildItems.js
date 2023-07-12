@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Grid,
   Box,
@@ -7,40 +6,62 @@ import {
   Card,
   CardMedia,
 } from "@mui/material";
-import { useState } from "react";
 import image from "./pics/countess.webp";
+import React, { useContext, useState } from "react";
+import { MyContext } from "./MyContext";
 
-const BuildItems = ({ buildItems, items, selectedBuildItem, setSelectedBuildItem }) => {
+const BuildItems = ({
+  buildItems,
+  selectedBuildItem,
+  setSelectedBuildItem,
+  currentBuild,
+}) => {
   const [hoveredItemId, setHoveredItemId] = useState(null);
-//   const [selectedBuildItem, setSelectedBuildItem] = useState([]);
+  const { items, builds } = useContext(MyContext);
+  const titles = [
+    "Crest",
+    "Item 1",
+    "Item 2",
+    "Item 3",
+    "Item 4",
+    "Consumable",
+  ];
+
+  //access the build_items array in the currentBuild object
+  const findCurrentBuild = builds.find((build) => build.id === currentBuild);
+  const currentBuildItems = findCurrentBuild
+    ? findCurrentBuild.build_items
+    : [];
+  console.log(selectedBuildItem);
+
   const handleMouseEnter = (itemId) => {
-      setHoveredItemId(itemId);
-    };
-    
-    const handleMouseLeave = () => {
-        setHoveredItemId(null);
-    };
-    const handleCardClick = (itemId) => {
-        if (selectedBuildItem === itemId) {
-          // Deselect the item if it's already selected
-          setSelectedBuildItem(null);
-        } else {
-          // Select the clicked item
-          setSelectedBuildItem(itemId);
-        }
-    };
-    
-    const formatAttributeKey = (key) => {
+    setHoveredItemId(itemId);
+  };
+
+  const handleMouseLeave = () => {
+    setHoveredItemId(null);
+  };
+  const handleCardClick = (itemId) => {
+    if (selectedBuildItem === itemId) {
+      // Deselect the item if it's already selected
+      setSelectedBuildItem([]);
+    } else {
+      // Select the clicked item
+      setSelectedBuildItem(itemId);
+    }
+  };
+
+  const formatAttributeKey = (key) => {
     const words = key.split("_");
     const capitalizedWords = words.map(
-        (word) => word.charAt(0).toUpperCase() + word.slice(1)
-        );
-        return capitalizedWords.join(" ");
-    };
-    
-    return (
-        <Box
-        position="relative"
+      (word) => word.charAt(0).toUpperCase() + word.slice(1)
+    );
+    return capitalizedWords.join(" ");
+  };
+
+  return (
+    <Box
+      position="relative"
       backgroundColor="rgba(0, 0, 0, 0.5)" // transparent background color
       borderRadius={2}
       p={3}
@@ -54,31 +75,44 @@ const BuildItems = ({ buildItems, items, selectedBuildItem, setSelectedBuildItem
         justifyContent="center"
         sx={{ flexWrap: "wrap" }}
       >
-        <Grid container spacing={2} mr={8} ml={8} sx={{ justifyContent: "center", flexWrap: "wrap" }}>
-          {buildItems.map((buildItem, index) => {
+        <Grid
+          container
+          spacing={2}
+          mr={8}
+          ml={8}
+          sx={{ justifyContent: "center", flexWrap: "wrap" }}
+        >
+          {currentBuildItems.map((buildItem, index) => {
             const item = items.find((item) => item.id === buildItem.item_id);
+            const title = titles[index % titles.length];
             return (
               <Grid key={index}>
                 {item ? (
                   <Card
                     elevation={20}
                     sx={{
-                        border: "1px solid #e1e2fe",
-                        backgroundColor: hoveredItemId === buildItem.item_id ? "#f5f5f5" : "#e1e2fe",
-                        position: "relative",
-                        width: "100px",
-                        height: "100px",
-                        margin: "10px",
-                        paddingTop: "80%", // 1:1 Aspect Ratio
-                        overflow: "visible", // Allow hover box to overflow card boundaries
+                      border: "1px solid #e1e2fe",
+                      backgroundColor:
+                        hoveredItemId === buildItem.item_id
+                          ? "#f5f5f5"
+                          : "#e1e2fe",
+                      position: "relative",
+                      width: "100px",
+                      height: "100px",
+                      margin: "10px",
+                      paddingTop: "80%", // 1:1 Aspect Ratio
+                      overflow: "visible", // Allow hover box to overflow card boundaries
                     }}
                     onMouseEnter={() => handleMouseEnter(buildItem.item_id)}
                     onMouseLeave={handleMouseLeave}
                     onClick={() => handleCardClick(buildItem)}
                     style={{
-                        // Add selected styles if the item is selected
-                        boxShadow: selectedBuildItem === buildItem ? '0 0 6px 6px red' : 'none',
-                      }}
+                      // Add selected styles if the item is selected
+                      boxShadow:
+                        selectedBuildItem === buildItem
+                          ? "0 0 6px 6px red"
+                          : "none",
+                    }}
                   >
                     <CardContent align="center">
                       {/* <Typography style={{ color: "#ffffff" }}>
@@ -103,7 +137,9 @@ const BuildItems = ({ buildItems, items, selectedBuildItem, setSelectedBuildItem
                           position: "absolute",
                         }}
                       />
-
+                      <Typography style={{ color: "#ffffff" }}>
+                        {title} {/* Render the title */}
+                      </Typography>
                       {/* Render additional item data */}
                       <Box
                         sx={{

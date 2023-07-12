@@ -9,6 +9,7 @@ import Login from "./Login";
 import AccountCreate from "./AccountCreate";
 import Items from "./Items";
 import Createbuild from "./Createbuild";
+import Mybuilds from "./Mybuilds";
 
 
 function App() {
@@ -31,11 +32,11 @@ function App() {
               {user !== null || undefined ? (
                 <>
                   <Route path="/AccountCreate" element={<AccountCreate />} />
-                  <Route path={`/builds/create`} element={<Createbuild />} />
+                  <Route path="/builds/create" element={<Createbuild />} />
+                  <Route path="/builds/myBuilds" element={<Mybuilds />} />
                   {/* <Route path="/admin" element={<AdminDashboard />} />
                   <Route path="/admin/team/assign" element={<Assign />} />
                   <Route path="/contacts" element={<Contacts />} />
-                  <Route path="/admin/projects" element={<Projects />} />
                   <Route
                     path="/admin/projects/editProject"
                     element={<EditProject />}
