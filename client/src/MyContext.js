@@ -10,7 +10,8 @@ function MyProvider({ children }) {
   const navigate = useNavigate();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [currentBuild, setCurrentBuild] = useState([]);
-
+  const [editingBuild, setEditingBuild] = useState(false);
+  const findCurrentBuild = builds.find((build) => build.id === currentBuild);
   useEffect(() => {
     fetch("/me").then((res) => {
       if (res.ok) {
@@ -51,19 +52,25 @@ function MyProvider({ children }) {
   }
 
   
-//check later if i can use currentBuild instead of updatedBuild
-  function addNewBuildItem(updatedBuild) {
-    setBuilds((prevBuilds) => {
-      const updatedBuilds = prevBuilds.map((build) => {
-        if (build.id === updatedBuild.id) {
-          return updatedBuild;
-        }
-        return build;
-      });
-      return updatedBuilds;
+// check later if i can use currentBuild instead of updatedBuild
+function addNewBuildItem(updatedBuild) {
+  setBuilds((prevBuilds) => {
+    const updatedBuilds = prevBuilds.map((build) => {
+      if (build.id === updatedBuild.id) {
+        return {
+          ...build,
+          total_stats: updatedBuild.total_stats,
+          item_specials: updatedBuild.item_specials,
+        };
+      }
+      return build;
     });
-  }
+    return updatedBuilds;
+  });
+}
 
+
+////same code replace this with the one above
   function handleBuildEdit(updatedBuild) {
     setBuilds((prevBuilds) => {
       const updatedBuilds = prevBuilds.map((build) => {
@@ -75,6 +82,11 @@ function MyProvider({ children }) {
       return updatedBuilds;
     });
   }
+
+  const handleSidebarItemClick = () => {
+    setEditingBuild(true); // Set the editingBuild state to true
+    setCurrentBuild([]); // Reset the currentBuild state to an empty array
+  };
 
   return (
     <MyContext.Provider
@@ -91,7 +103,11 @@ function MyProvider({ children }) {
         addNewBuildItem,
         currentBuild,
         setCurrentBuild,
-        handleBuildEdit
+        handleBuildEdit,
+        editingBuild,
+        setEditingBuild,
+        handleSidebarItemClick,
+        findCurrentBuild,
       }}
     >
       {children}

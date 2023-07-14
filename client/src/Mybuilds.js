@@ -28,11 +28,12 @@ const Mybuilds = () => {
   const colors = tokens(theme.palette.mode);
   const isNonMobile = useMediaQuery("(min-width:700px)");
   const { user, setUser, isCollapsed, builds, currentBuild, setCurrentBuild } = useContext(MyContext);
-
+  const navigate = useNavigate();
   // array that matches the current user id
   const findUserBuilds = builds.filter((build) => build.user_id === user.id);
 
   const handleCardClick = (build) => () => {
+    navigate("/builds/create");
     setCurrentBuild(build.id);
     };
     console.log(currentBuild)
@@ -51,6 +52,7 @@ const Mybuilds = () => {
         backgroundPosition: "center",
         height: "100vh",
         position: "relative",
+        overflow: "scroll"
       }}
     >
       <Header title="My Builds" subtitle="Select one of your builds" />

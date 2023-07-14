@@ -20,12 +20,11 @@ class BuildItemsController < ApplicationController
     end
 
     def update
-        puts params[:id]
         build_item = find_build_item
-        puts build_item.inspect
         build_item.update!(build_item_params)
-        render json: build_item
-      end
+        build = build_item.build
+        render json: build, Serializer: BuildSerializer
+    end
 
 
     def destroy

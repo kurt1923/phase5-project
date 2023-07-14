@@ -17,9 +17,16 @@ import logo from "/home/aizen/development/code/phase5/phase5-project/client/src/
 import React, { useContext } from "react";
 import { MyContext } from "../MyContext";
 
-const Item = ({ title, to, icon, selected, setSelected }) => {
+const Item = ({ title, to, icon, selected, setSelected, onClick }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+
+  const handleClick = () => {
+    setSelected(title);
+    if (onClick) {
+      onClick(); // Call the onClick function if it is provided
+    }
+  };
 
   return (
     <MenuItem
@@ -29,7 +36,7 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
         margin: "6px 0px 6px 0px",
         //fontsize
       }}
-      onClick={() => setSelected(title)}
+      onClick={onClick ? handleClick : () => setSelected(title)}
       icon={icon}
     >
       <Typography>{title}</Typography>
@@ -41,9 +48,11 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
 const Sidebar = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const { handleLogoutClick, user, setIsCollapsed, isCollapsed } = useContext(MyContext);
+  const { handleLogoutClick, user, setIsCollapsed, isCollapsed, setEditingBuild, setCurrentBuild, handleSidebarItemClick } = useContext(MyContext);
   // const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
+
+
 
   return (
     <Box
@@ -190,6 +199,7 @@ const Sidebar = () => {
                   icon={<PeopleOutlinedIcon />}
                   selected={selected}
                   setSelected={setSelected}
+                  onClick={handleSidebarItemClick}
                 />
                 <Item
                   title="My Builds"

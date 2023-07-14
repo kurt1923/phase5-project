@@ -13,13 +13,14 @@ import Header from "./Header";
 import { Formik, Form, FieldArray } from "formik";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import React, { useContext } from "react";
 import { MyContext } from "./MyContext";
 import background from "./pics/predwallpaper1.jpg";
 import ItemsComp from "./ItemsComp";
 import BuildItems from "./BuildItems";
 import image from "./pics/countess.webp";
+import BuildInfoComp from "./BuildInfoComp";
 
 const Createbuild = () => {
   const theme = useTheme();
@@ -37,14 +38,18 @@ const Createbuild = () => {
     currentBuild,
     setCurrentBuild,
     handleBuildEdit,
+    editingBuild,
+    setEditingBuild,
+    // findCurrentBuild,
   } = useContext(MyContext);
   const [selectedItemIds, setSelectedItemIds] = useState([]);
   const navigate = useNavigate();
   const [error, setError] = useState([]);
   const [selectedBuildItem, setSelectedBuildItem] = useState([]);
   const noBuild = currentBuild.length === 0;
-  const findCurrentBuild = builds.find((build) => build.id === currentBuild);
-
+  const findCurrentBuild = builds.find((build) => build.id == currentBuild);
+  console.log(currentBuild)
+  console.log(findCurrentBuild)
   const initialValues = noBuild
     ? {
         title: "",
@@ -61,10 +66,9 @@ const Createbuild = () => {
 
   console.log(initialValues);
 
-  //im creating a new build with 6 build_items
   function handleFormSubmit(values) {
     console.log("handleFormSubmit called");
-
+  
     fetch("/builds", {
       method: "POST",
       headers: {
@@ -80,41 +84,40 @@ const Createbuild = () => {
         }
       })
       .then((newBuild) => {
-        addNewBuild(newBuild);
-
-        // Create 6 new build_item models with blank item_id fields
-        const buildItemIdList = Array.from({ length: 6 }).map(() => {
-          const randomItemId = Math.floor(Math.random() * 50) + 1;
-          return fetch("/build_items", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              build_id: newBuild.id,
-              item_id: randomItemId,
-            }),
-          }).then((res) => res.json());
-        });
-
-        // Wait for all build_item creations to complete
-        Promise.all(buildItemIdList).then((buildItems) => {
-          const updatedBuild = { ...newBuild, build_items: buildItems };
-          addNewBuildItem(updatedBuild);
-
-          console.log("Created build_items:", buildItems);
-        });
-        setCurrentBuild(newBuild.id);
+        console.log("Created build:", newBuild);
+  
+        // Update the build with the correct total_stats and item_specials
+        const updatedBuild = {
+          ...newBuild,
+          total_stats: newBuild.total_stats,
+          item_specials: newBuild.item_specials,
+        };
+  
+        addNewBuild(updatedBuild); // Call addNewBuild with the updatedBuild
+        console.log("bi")
+        setCurrentBuild(updatedBuild.id);
+        console.log("hi")
+  
       })
       .catch((error) => {
         setError(error.message);
       });
+      setTimeout(() => {
+        setEditingBuild(false);
+      }, 500);
   }
+
+  // console.log(currentBuild);
+  // console.log("builds state", builds);
+  // console.log(selectedItemIds);
+  // console.log(selectedBuildItem);
+  // console.log(findCurrentBuild);
+  // console.log("editingBuild", editingBuild);
 
   //this edits the current builitems by updating the item_id and then setting new state
   const handleCardClick = (itemId) => {
     const selectedBuildItemId = selectedBuildItem.id;
-
+  
     fetch(`/build_items/${selectedBuildItemId}`, {
       method: "PATCH",
       headers: {
@@ -124,36 +127,34 @@ const Createbuild = () => {
     })
       .then((res) => {
         if (res.ok) {
-          return res.json(); // Parse the response as JSON
+          return res.json();
         } else {
           throw new Error("Failed to update build item");
         }
       })
-      .then((updatedBuildItem) => {
-        // Update the builds state with the updated selectedBuildItem
+      .then((updatedBuild) => {
         const updatedBuilds = builds.map((build) => {
           if (build.id === currentBuild) {
             const updatedBuildItems = build.build_items.map((buildItem) => {
               if (buildItem.id === selectedBuildItemId) {
-                return { ...buildItem, item_id: itemId }; // Only update the item_id
+                return updatedBuild.build_items.find(
+                  (item) => item.id === selectedBuildItemId
+                );
               }
               return buildItem;
             });
             return {
               ...build,
               build_items: updatedBuildItems,
+              total_stats: updatedBuild.total_stats,
+              item_specials: updatedBuild.item_specials,
             };
           }
           return build;
         });
-
-        // Update the selectedBuildItem and builds state
+  
         setSelectedBuildItem([]);
         setBuilds(updatedBuilds);
-        // setUser((prevUser) => ({
-        //   ...prevUser,
-        //   builds: updatedBuilds,
-        // }));
       })
       .catch((error) => {
         console.error("Error updating build item:", error);
@@ -180,6 +181,7 @@ const Createbuild = () => {
       })
       .then((updatedBuild) => {
         // Update the builds state with the updated selectedBuildItem
+        setEditingBuild(false);
         handleBuildEdit(updatedBuild);
       })
       .catch((error) => {
@@ -187,11 +189,12 @@ const Createbuild = () => {
       });
   };
 
-  console.log("currentbuild id", currentBuild);
-  console.log("builds state", builds);
-  console.log(selectedItemIds);
-  console.log(selectedBuildItem);
-  console.log(findCurrentBuild);
+  // console.log("currentbuild id", currentBuild);
+  // console.log("builds state", builds);
+  // console.log(selectedItemIds);
+  // console.log(selectedBuildItem);
+  // console.log(findCurrentBuild);
+  // console.log("editingBuild", editingBuild);
 
   return (
     <Box
@@ -211,119 +214,138 @@ const Createbuild = () => {
       }}
     >
       <Header
-        title={noBuild ? "Create Build" : `Edit: ${findCurrentBuild.title}`}
+        title={
+          editingBuild
+            ? noBuild
+              ? "Create Build"
+              : `Edit: ${findCurrentBuild?.title}`
+            : findCurrentBuild?.title
+        }
         subtitle={
-          noBuild ? "Add info and Submit, then add items" : "Edit info or Items"
+          editingBuild
+            ? noBuild
+              ? "Add info and Submit, then add items"
+              : "Edit: Edit info or Items"
+            : findCurrentBuild?.hero
         }
       />
-      <Formik
-        onSubmit={(values) =>
-          noBuild ? handleFormSubmit(values) : handleEdit(values)
-        }
-        initialValues={initialValues}
-        // validationSchema={checkoutSchema}
-      >
-        {({
-          values,
-          errors,
-          touched,
-          handleBlur,
-          handleChange,
-          handleSubmit,
-        }) => (
-          <Form name="buildForm" onSubmit={handleSubmit}>
-            <Box
-              position="relative"
-              backgroundColor="rgba(0, 0, 0, 0.6)" // transparent background color
-              borderRadius={2}
-              p={3}
-              mx={2}
-              mt={2}
-              boxShadow={1}
-              //   backdropfilter="blur(1000px)" // Add a blur filter
-              //   zIndex={1}
-            >
-              <TextField
-                fullWidth
-                // variant="filled"
-                type="text"
-                label="Build Name"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.title}
-                name="title"
-                error={!!touched.title && !!errors.title}
-                helperText={touched.title && errors.title}
-                sx={{
-                  gridColumn: "span 2",
-                  color: colors.primary[100],
-                  marginBottom: "10px",
-                  fontWeight: "bolder",
-                }}
-              />
-              <TextField
-                fullWidth
-                multiline={true}
-                rows={5}
-                // variant="filled"
-                type="text"
-                // placeholder="Info"
-                label="Build Info"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.info}
-                name="info"
-                error={!!touched.info && !!errors.info}
-                helperText={touched.info && errors.info}
-                sx={{
-                  gridColumn: "span 2",
-                  color: colors.primary[100],
-                  marginBottom: "10px",
-                }}
-              />
-              <TextField
-                name="hero"
-                label="Hero"
-                placeholder="Hero"
-                select={true}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                value={values.hero}
-                error={!!touched.hero && !!errors.hero}
-                helperText={touched.hero && errors.hero}
+      {editingBuild ? (
+        <Formik
+          onSubmit={(values) =>
+            noBuild ? handleFormSubmit(values) : handleEdit(values)
+          }
+          initialValues={initialValues}
+          // validationSchema={checkoutSchema}
+        >
+          {({
+            values,
+            errors,
+            touched,
+            handleBlur,
+            handleChange,
+            handleSubmit,
+          }) => (
+            <Form name="buildForm" onSubmit={handleSubmit}>
+              <Box
+                position="relative"
+                backgroundColor="rgba(0, 0, 0, 0.6)" // transparent background color
+                borderRadius={2}
+                p={3}
+                mx={2}
+                mt={2}
+                boxShadow={1}
+                //   backdropfilter="blur(1000px)" // Add a blur filter
+                //   zIndex={1}
               >
-                <MenuItem value="Gideon">Gideon</MenuItem>
-                <MenuItem value="Fey">Fey</MenuItem>
-                <MenuItem value="Crunch">Crunch</MenuItem>
-                <MenuItem value="Dekker">Dekker</MenuItem>
-                <MenuItem value="Drongo">Drongo</MenuItem>
-                <MenuItem value="Grux">Grux</MenuItem>
-              </TextField>
-              {noBuild ? (
-                <Box display="flex" justifyContent="center" m="10px" p="10px">
-                  <Button
-                    type="submit"
-                    sx={{ backgroundColor: colors.blueAccent[300] }}
-                    variant="contained"
-                  >
-                    Create Build
-                  </Button>
-                </Box>
-              ) : (
-                <Box display="flex" justifyContent="center" m="10px" p="10px">
-                  <Button
-                    type="submit"
-                    sx={{ backgroundColor: colors.blueAccent[300] }}
-                    variant="contained"
-                  >
-                    Submit new Build Info
-                  </Button>
-                </Box>
-              )}
-            </Box>
-          </Form>
-        )}
-      </Formik>
+                <TextField
+                  fullWidth
+                  // variant="filled"
+                  type="text"
+                  label="Build Name"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  value={values.title}
+                  name="title"
+                  error={!!touched.title && !!errors.title}
+                  helperText={touched.title && errors.title}
+                  sx={{
+                    gridColumn: "span 2",
+                    color: colors.primary[100],
+                    marginBottom: "10px",
+                    fontWeight: "bolder",
+                  }}
+                />
+                <TextField
+                  fullWidth
+                  multiline={true}
+                  rows={5}
+                  // variant="filled"
+                  type="text"
+                  // placeholder="Info"
+                  label="Build Info"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  value={values.info}
+                  name="info"
+                  error={!!touched.info && !!errors.info}
+                  helperText={touched.info && errors.info}
+                  sx={{
+                    gridColumn: "span 2",
+                    color: colors.primary[100],
+                    marginBottom: "10px",
+                  }}
+                />
+                <TextField
+                  name="hero"
+                  label="Hero"
+                  placeholder="Hero"
+                  select={true}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.hero}
+                  error={!!touched.hero && !!errors.hero}
+                  helperText={touched.hero && errors.hero}
+                >
+                  <MenuItem value="Gideon">Gideon</MenuItem>
+                  <MenuItem value="Fey">Fey</MenuItem>
+                  <MenuItem value="Crunch">Crunch</MenuItem>
+                  <MenuItem value="Dekker">Dekker</MenuItem>
+                  <MenuItem value="Drongo">Drongo</MenuItem>
+                  <MenuItem value="Grux">Grux</MenuItem>
+                </TextField>
+                {noBuild ? (
+                  <Box display="flex" justifyContent="center" m="10px" p="10px">
+                    <Button
+                      type="submit"
+                      sx={{ backgroundColor: colors.blueAccent[300] }}
+                      variant="contained"
+                    >
+                      Create Build
+                    </Button>
+                  </Box>
+                ) : (
+                  <Box display="flex" justifyContent="center" m="10px" p="10px">
+                    <Button
+                      type="submit"
+                      sx={{ backgroundColor: colors.blueAccent[300] }}
+                      variant="contained"
+                    >
+                      Submit new Build Info
+                    </Button>
+                  </Box>
+                )}
+              </Box>
+            </Form>
+          )}
+        </Formik>
+      ) : (
+        <BuildInfoComp
+          findCurrentBuild={findCurrentBuild}
+          setEditingBuild={setEditingBuild}
+          isNonMobile={isNonMobile}
+          colors={colors}
+        />
+      )}
       <BuildItems
         // buildItems={buildItems}
         items={items}
@@ -377,3 +399,16 @@ export default Createbuild;
 // };
 
 // export default MyComponent;
+
+// handleFormSubmit breakdown
+// The fetch request is made to create a new build.
+// Once the response is received, it is checked for success. If successful, the response is parsed as JSON.
+// The newBuild object is added to the builds state using the addNewBuild function.
+// An array of promises (buildItemIdList) is created to handle the creation of six new build item models with blank item_id fields.
+// The Promise.all function is used to wait for all build item creations to complete.
+// Once all build items are created, the buildItems array is received.
+// The newBuild object is updated with the build_items property using the spread operator.
+// The updated build is added to the builds state using the addNewBuildItem function.
+// The setCurrentBuild function is called to set the current build to the ID of the new build.
+// setTimeout is used to delay the execution of setEditingBuild(false) by 500 milliseconds.
+// After the specified delay, setEditingBuild(false) is called to set the editing state to false.

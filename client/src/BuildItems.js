@@ -32,7 +32,7 @@ const BuildItems = ({
   const currentBuildItems = findCurrentBuild
     ? findCurrentBuild.build_items
     : [];
-  console.log(selectedBuildItem);
+  
 
   const handleMouseEnter = (itemId) => {
     setHoveredItemId(itemId);
