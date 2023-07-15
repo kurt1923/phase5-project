@@ -189,16 +189,10 @@ const Createbuild = () => {
       });
   };
 
-  // console.log("currentbuild id", currentBuild);
-  // console.log("builds state", builds);
-  // console.log(selectedItemIds);
-  // console.log(selectedBuildItem);
-  // console.log(findCurrentBuild);
-  // console.log("editingBuild", editingBuild);
 
   return (
     <Box
-      m="20px"
+      p="20px"
       ml={isCollapsed ? "80px" : "270px"}
       display="flex"
       flexDirection="column"
@@ -254,8 +248,6 @@ const Createbuild = () => {
                 mx={2}
                 mt={2}
                 boxShadow={1}
-                //   backdropfilter="blur(1000px)" // Add a blur filter
-                //   zIndex={1}
               >
                 <TextField
                   fullWidth
