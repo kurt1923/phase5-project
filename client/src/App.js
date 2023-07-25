@@ -10,11 +10,13 @@ import AccountCreate from "./AccountCreate";
 import Items from "./Items";
 import Createbuild from "./Createbuild";
 import Mybuilds from "./Mybuilds";
+import Heros from "./Heros"
+import HeroPage from "./HeroPage"
 
 
 function App() {
   const [theme, colorMode] = useMode();
-  const { user, builds } = useContext(MyContext);
+  const { user, builds, selectedHero } = useContext(MyContext);
   
 
   return (
@@ -28,23 +30,18 @@ function App() {
           <Topbar />
             <Routes>
               <Route path="/"></Route>
+              <Route path="/Heros" element={<Heros/>} />
               <Route path="/Items" element={<Items />} />
+              <Route path="/heros/:id" element={<HeroPage/>} />
               {user !== null || undefined ? (
                 <>
                   <Route path="/AccountCreate" element={<AccountCreate />} />
                   <Route path="/builds/create" element={<Createbuild />} />
                   <Route path="/builds/myBuilds" element={<Mybuilds />} />
-                  {/* <Route path="/admin" element={<AdminDashboard />} />
-                  <Route path="/admin/team/assign" element={<Assign />} />
-                  <Route path="/contacts" element={<Contacts />} />
-                  <Route
-                    path="/admin/projects/editProject"
-                    element={<EditProject />}
-                  />
-                  <Route path="/admin/addEmployee" element={<AddEmployee />} /> */}
                 </>
               ) : null}
               <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<AccountCreate />} />
             </Routes>
           </main>
         </div>

@@ -16,7 +16,7 @@ import { MyContext } from "./MyContext";
 import { tokens } from "./theme";
 import { useContext } from "react";
 import React, { useState } from "react";
-import image from "./pics/countess.webp";
+import image from "./pics/vanguardian.png";
 
 const ItemsComp = ( {handleCardClick, selectedItemIds, isItemsList } ) => {
   const theme = useTheme();

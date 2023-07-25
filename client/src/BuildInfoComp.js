@@ -52,6 +52,7 @@ const BuildInfoComp = ({ colors, isNonMobile }) => {
               >
                 <Typography
                   variant="h3"
+                  key={findCurrentBuild.id}
                   style={{
                     color: "#ffffff",
                     fontWeight: "bold",
@@ -81,6 +82,7 @@ const BuildInfoComp = ({ colors, isNonMobile }) => {
               >
                 <Typography
                   variant="h3"
+                  key={findCurrentBuild.id}
                   style={{
                     color: "#ffffff",
                     fontWeight: "bold",

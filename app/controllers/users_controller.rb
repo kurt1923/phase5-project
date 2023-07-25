@@ -2,7 +2,7 @@ class UsersController < ApplicationController
 rescue_from ActiveRecord::RecordNotFound, with: :render_not_found_response
 rescue_from ActiveRecord::RecordInvalid, with: :render_unprocessable_entity_response
 
-    
+    # get rid of this later
     def index
         users = User.all
         render json: users

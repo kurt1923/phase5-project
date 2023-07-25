@@ -8,22 +8,22 @@ import { useNavigate } from "react-router-dom";
 import Typography from "@mui/material/Typography";
 import { useState, useContext } from "react";
 import { MyContext } from "./MyContext";
+import background from "./pics/predwallpaper1.jpg";
 
-
-const AddAdmin = () => {
+const AccountCreate = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
   const [error, setError] = useState(null);
-  const { handleAddAdmin } = useContext(MyContext);
+  const { isCollapsed, setUser, user } = useContext(MyContext);
   const initialValues = {
     email: "",
-    password: ""
+    password: "",
   };
 
   function updateEmployees(values) {
-    fetch("/admins", {
+    fetch("/users", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -33,7 +33,7 @@ const AddAdmin = () => {
       if (res.ok) {
         alert("Admin Created, please login to continue");
         navigate("/login");
-        res.json().then((admin) => handleAddAdmin(admin));
+        res.json().then((user) => setUser(user));
       } else {
         res.json().then((json) => {
           setError(json.errors);
@@ -42,105 +42,120 @@ const AddAdmin = () => {
       }
     });
   }
-
+  
   return (
-    <Box m="20px">
+    <Box
+      p={"20px"}
+      ml={isCollapsed ? "80px" : "270px"}
+      display="flex"
+      flexDirection="column"
+      overflow="visible"
+      sx={{
+        backgroundImage: `url(${background})`,
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        height: "100vh",
+        position: "relative",
+        overflow: "scroll",
+      }}
+    >
       <Header
-        title="Add Admin....For FlatIron use only"
-        subtitle="Complete Form and Submit to create your admin account and test project...In actual app admin will only be able to create other admin"
+        title="Create Account"
+        subtitle="Complete Form and Submit to create your account"
       />
-      <Typography component="h1" variant="h5" color="red">
-        {" "}
-        {error ? "Errors:" + error.map((e) => e).join(", ") : null}
-      </Typography>
-
-      <Formik
-        onSubmit={updateEmployees}
-        initialValues={initialValues}
-        validationSchema={checkoutSchema}
+      <Box
+        display="flex"
+        justifyContent="center"
+        marginTop={5}
+        // alignItems="center"
+        height="100%" // Ensures the box takes full height of the screen
       >
-        {({
-          values,
-          errors,
-          touched,
-          handleBlur,
-          handleChange,
-          handleSubmit,
-        }) => (
-          <Form onSubmit={handleSubmit}>
-            <Box
-              display="grid"
-              gap="30px"
-              gridTemplateColumns="repeat(4, minmax(0, 1fr))"
-              ///change form color
-              backgroundColor={colors.primary[50]}
-              border={2}
-              padding={2}
-              borderColor={colors.grey[900]}
-              borderRadius={2}
-              sx={{
-                "& .MuiInputBase-input": {
-                  background: colors.primary[400],
-                  color: colors.grey[100],
-                  borderRadius: "4px",
-                },
-                "& .MuiTextField-root": {
-                  color: colors.primary[100],
-                },
-                "& .MuiInputBase-root": {
-                  background: colors.primary[200],
-                  color: colors.primary[900],
-                  borderRadius: "4px",
-                },
-                "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
-              }}
-            >
+        <Typography component="h1" variant="h5" color="red">
+          {" "}
+          {error ? "Errors:" + error.map((e) => e).join(", ") : null}
+        </Typography>
 
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Email"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.email}
-                name="email"
-                error={!!touched.email && !!errors.email}
-                helperText={touched.email && errors.email}
-                sx={{ gridColumn: "span 4" }}
-              />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Password"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.password}
-                name="password"
-                error={!!touched.password && !!errors.password}
-                helperText={touched.password && errors.password}
-                sx={{ gridColumn: "span 4" }}
-              />
+        <Formik
+          onSubmit={updateEmployees}
+          initialValues={initialValues}
+          validationSchema={checkoutSchema}
+        >
+          {({
+            values,
+            errors,
+            touched,
+            handleBlur,
+            handleChange,
+            handleSubmit,
+          }) => (
+            <Form onSubmit={handleSubmit}>
               <Box
-                display="flex"
-                justifyContent="center"
-                m="10px"
-                p="10px"
-                sx={{ gridColumn: 4 }}
+                position="relative"
+                backgroundColor="rgba(0, 0, 0, 0.6)" // transparent background color
+                borderRadius={2}
+                p={3}
+                mx={2}
+                mt={2}
+                boxShadow={1}
+                maxWidth={isNonMobile ? "600px" : "100%"}
               >
-                <Button
-                  type="submit"
-                  variant="contained"
-                  sx={{ backgroundColor: colors.blueAccent[300] }}
+                <TextField
+                  fullWidth
+                  variant="filled"
+                  type="text"
+                  label="Email"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  value={values.email}
+                  name="email"
+                  error={!!touched.email && !!errors.email}
+                  helperText={touched.email && errors.email}
+                  sx={{
+                    gridColumn: "span 2",
+                    color: colors.primary[100],
+                    marginBottom: "10px",
+                    fontWeight: "bolder",
+                  }}
+                />
+                <TextField
+                  fullWidth
+                  variant="filled"
+                  type="text"
+                  label="Password"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  value={values.password}
+                  name="password"
+                  error={!!touched.password && !!errors.password}
+                  helperText={touched.password && errors.password}
+                  sx={{
+                    gridColumn: "span 2",
+                    color: colors.primary[100],
+                    marginBottom: "10px",
+                    fontWeight: "bolder",
+                  }}
+                />
+                <Box
+                  display="flex"
+                  justifyContent="center"
+                  m="10px"
+                  p="10px"
+                  sx={{ gridColumn: 4 }}
                 >
-                  Create Admin Account
-                </Button>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    sx={{ backgroundColor: colors.blueAccent[300] }}
+                  >
+                    Create Account
+                  </Button>
+                </Box>
               </Box>
-            </Box>
-          </Form>
-        )}
-      </Formik>
+            </Form>
+          )}
+        </Formik>
+      </Box>
     </Box>
   );
 };
@@ -163,4 +178,4 @@ const checkoutSchema = yup.object().shape({
   // address1: yup.string().required("required"),
 });
 
-export default AddAdmin;
+export default AccountCreate;

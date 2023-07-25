@@ -7,7 +7,9 @@ function MyProvider({ children }) {
   const [user, setUser] = useState(null);
   const [items, setItems] = useState([]);
   const [builds, setBuilds] = useState([]);
+  const [heros, setHeros] = useState([]);
   const navigate = useNavigate();
+  const [selectedHero, setSelectedHero] = useState([])
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [currentBuild, setCurrentBuild] = useState([]);
   const [editingBuild, setEditingBuild] = useState(false);
@@ -33,6 +35,12 @@ function MyProvider({ children }) {
       .then((res) => res.json())
       .then((data) => setBuilds(data));
   }, []);
+
+  useEffect(() => {
+    fetch("/heros")
+      .then((res) => res.json())
+      .then((data) => setHeros(data));
+  }, []);
   console.log(builds);
   function handleLogoutClick() {
     fetch("/logout", { method: "DELETE" }).then((r) => {
@@ -42,6 +50,10 @@ function MyProvider({ children }) {
     });
     navigate("/login");
   }
+
+  // function addNewUser(newUser) {
+  //   const updateUsers = [...users, newUser];
+
 
   function addNewBuild(newBuild) {
     setBuilds((prevBuilds) => [...prevBuilds, newBuild]);
@@ -108,6 +120,9 @@ function addNewBuildItem(updatedBuild) {
         setEditingBuild,
         handleSidebarItemClick,
         findCurrentBuild,
+        heros,
+        selectedHero,
+        setSelectedHero
       }}
     >
       {children}

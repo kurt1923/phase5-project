@@ -163,7 +163,7 @@ const Sidebar = () => {
             />
             <Item
               title="Heros"
-              to="/"
+              to="/Heros"
               icon={<Heros />}
               selected={selected}
               setSelected={setSelected}
@@ -205,20 +205,6 @@ const Sidebar = () => {
                   title="My Builds"
                   to="/builds/myBuilds"
                   icon={<ReceiptOutlinedIcon />}
-                  selected={selected}
-                  setSelected={setSelected}
-                />
-                <Item
-                  title="Add Employee"
-                  to="/admin/addEmployee"
-                  icon={<PersonOutlinedIcon />}
-                  selected={selected}
-                  setSelected={setSelected}
-                />
-                <Item
-                  title="Contacts Info"
-                  to="/contacts"
-                  icon={<ContactsOutlinedIcon />}
                   selected={selected}
                   setSelected={setSelected}
                 />

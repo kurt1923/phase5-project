@@ -14,6 +14,7 @@ gem "puma", "~> 5.0"
 
 gem 'faker', '~> 2.18.0'
 
+gem 'aws-sdk-s3', require: false
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 # gem "jbuilder"
 

@@ -77,12 +77,16 @@ const Mybuilds = () => {
               border: "1px solid #e1e2fe",
               flexDirection: "row",
               alignItems: "center",
-              width: isNonMobile ? "200px" : "100px",
-              height: isNonMobile ? "300px" : "150px",
+              width: isNonMobile ? "200px" : "150px",
+              height: isNonMobile ? "300px" : "200px",
               margin: "10px",
               borderRadius: "10px",
-              boxShadow: "0 0 7px 1px #ffffff",
+              boxShadow: "0 0 10px 2px #ffffff",
               cursor: "pointer",
+              transition: "transform 0.2s",
+              "&:hover": {
+                transform: "scale(1.05)",
+              },
             }}
           >
             <CardMedia

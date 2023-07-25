@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :heros
   resources :items
   resources :build_items
   resources :builds
