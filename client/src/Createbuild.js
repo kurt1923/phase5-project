@@ -19,7 +19,6 @@ import { MyContext } from "./MyContext";
 import background from "./pics/predwallpaper1.jpg";
 import ItemsComp from "./ItemsComp";
 import BuildItems from "./BuildItems";
-import image from "./pics/countess.webp";
 import BuildInfoComp from "./BuildInfoComp";
 
 const Createbuild = () => {
@@ -28,7 +27,7 @@ const Createbuild = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const {
     user,
-    setUser,
+    heros,
     isCollapsed,
     addNewBuild,
     builds,
@@ -48,27 +47,29 @@ const Createbuild = () => {
   const [selectedBuildItem, setSelectedBuildItem] = useState([]);
   const noBuild = currentBuild.length === 0;
   const findCurrentBuild = builds.find((build) => build.id == currentBuild);
-  console.log(currentBuild)
-  console.log(findCurrentBuild)
+  console.log(currentBuild);
+  console.log(findCurrentBuild);
   const initialValues = noBuild
     ? {
         title: "",
         hero: "Gideon",
         info: "",
         user_id: user.id,
+        wins: 0,
+        losses: 0,
+        favorite: false,
       }
     : {
         title: findCurrentBuild.title,
         hero: findCurrentBuild.hero,
-        info: findCurrentBuild.info,
-        user_id: findCurrentBuild.user_id,
+        info: findCurrentBuild.info
       };
 
   console.log(initialValues);
 
   function handleFormSubmit(values) {
     console.log("handleFormSubmit called");
-  
+
     fetch("/builds", {
       method: "POST",
       headers: {
@@ -85,26 +86,25 @@ const Createbuild = () => {
       })
       .then((newBuild) => {
         console.log("Created build:", newBuild);
-  
+
         // Update the build with the correct total_stats and item_specials
         const updatedBuild = {
           ...newBuild,
           total_stats: newBuild.total_stats,
           item_specials: newBuild.item_specials,
         };
-  
+
         addNewBuild(updatedBuild); // Call addNewBuild with the updatedBuild
-        console.log("bi")
+        console.log("bi");
         setCurrentBuild(updatedBuild.id);
-        console.log("hi")
-  
+        console.log("hi");
       })
       .catch((error) => {
         setError(error.message);
       });
-      setTimeout(() => {
-        setEditingBuild(false);
-      }, 500);
+    setTimeout(() => {
+      setEditingBuild(false);
+    }, 500);
   }
 
   // console.log(currentBuild);
@@ -117,7 +117,7 @@ const Createbuild = () => {
   //this edits the current builitems by updating the item_id and then setting new state
   const handleCardClick = (itemId) => {
     const selectedBuildItemId = selectedBuildItem.id;
-  
+
     fetch(`/build_items/${selectedBuildItemId}`, {
       method: "PATCH",
       headers: {
@@ -152,7 +152,7 @@ const Createbuild = () => {
           }
           return build;
         });
-  
+
         setSelectedBuildItem([]);
         setBuilds(updatedBuilds);
       })
@@ -163,9 +163,11 @@ const Createbuild = () => {
 
   //this edits the current build by updating the title, hero, and info
   const handleEdit = (values) => {
-    console.log("handleEdit called");
-    console.log(values);
-    fetch(`/builds/${currentBuild}`, {
+    const apiUrl = `/builds/${currentBuild}`; // The API endpoint URL
+
+    console.log("API URL:", apiUrl); // Log the API URL
+  
+    fetch(apiUrl, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -188,8 +190,7 @@ const Createbuild = () => {
         console.error("Error updating build:", error);
       });
   };
-
-
+console.log(currentBuild)
   return (
     <Box
       p="20px"
@@ -298,12 +299,11 @@ const Createbuild = () => {
                   error={!!touched.hero && !!errors.hero}
                   helperText={touched.hero && errors.hero}
                 >
-                  <MenuItem value="Gideon">Gideon</MenuItem>
-                  <MenuItem value="Fey">Fey</MenuItem>
-                  <MenuItem value="Crunch">Crunch</MenuItem>
-                  <MenuItem value="Dekker">Dekker</MenuItem>
-                  <MenuItem value="Drongo">Drongo</MenuItem>
-                  <MenuItem value="Grux">Grux</MenuItem>
+                  {heros.map((hero) => (
+                    <MenuItem key={hero.id} value={hero.name}>
+                      {hero.name}
+                    </MenuItem>
+                  ))}
                 </TextField>
                 {noBuild ? (
                   <Box display="flex" justifyContent="center" m="10px" p="10px">

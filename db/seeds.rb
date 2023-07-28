@@ -18,7 +18,9 @@ Item.destroy_all
 User.create([
     {
         email: "kurtv0727@gmail.com",
-        password_digest: BCrypt::Password.create("1111")
+        password_digest: BCrypt::Password.create("1111"),
+        username: "Aizen",
+        favorite_hero: "Revenant"
     },
 ])
 
@@ -29,25 +31,37 @@ Build.create([
         title: "My First Build",
         hero: "Gideon",
         info: "This is my first build",
-        user_id: User.first.id
+        user_id: User.first.id,
+        wins: 0,
+        losses: 0,
+        favorites: false
     },
     {
         title: "My Second Build",
         hero: "Gadget",
         info: "This is my second build",
-        user_id: User.first.id
+        user_id: User.first.id,
+        wins: 0,
+        losses: 0,
+        favorites: false
     },
     {
         title: "My Third Build",
         hero: "Murdock",
         info: "This is my third build",
-        user_id: User.first.id
+        user_id: User.first.id,
+        wins: 0,
+        losses: 0,
+        favorites: false
     },
     {
         title: "My Fourth Build",
         hero: "Feng Mao",
         info: "This is my fourth build",
-        user_id: User.first.id
+        user_id: User.first.id,
+        wins: 0,
+        losses: 0,
+        favorites: false
     }
 ])
 
@@ -56,7 +70,7 @@ puts "🌱  builds..."
 heroes_data = [
     {
         name: "Countess",
-        role: "Assassin",
+        role: "Midlane, Offlane",
         auto: "Slice: Melee basic attack dealing 56 + 90% physical damage.",
         passive: "Blood Tithe: Hero takedowns permanently grant 1.5% magical lifesteal, stacking up to 10 times.",
         ability_1: "Blade Siphon: Countess spins and strikes all enemy targets around her, dealing 70, 105, 140, 175, 210 + 65% magical damage to each and healing herself for 6, 8, 10, 12, 14 + 8% per target hit. Against heroes, the healing is increased by 40%.",
@@ -72,7 +86,7 @@ heroes_data = [
     },
     {
         name: "Crunch",
-        role: "Fighter",
+        role: "Offlane, Jungle",
         auto: "Punch: Melee basic attack dealing 56 + 80% physical damage.",
         passive: "Cross Crunch: After casting an ability, Crunch amplifies his next basic attack to deal + 15% physical + 15% bonus magical damage and reduce his current cooldowns by 1s. Empowered: Dash an extended distance, pushing enemy heroes on contact.",
         ability_1: "Forward Crunch: Dash forward, dealing 60, 90, 120, 150, 180 + 70% PP + 40% MP physical damage. Colliding with an enemy hero stops Crunch, and stuns the enemy for 0.25s.",
@@ -424,52 +438,68 @@ heroes_data = [
         image_url: "https://predecessor.s3.us-east-2.amazonaws.com/heros/sevarog.webp"
     },
     {
-        name: "Rampage",
-        role: "Jungle", 
-        auto: "Swipe: Melee basic attack dealing 54 + 90% AP physical damage.",
-        passive: "King of the Jungle: Rampage gains 19% attack speed and + 0.4% Health health regeneration while in the Jungle. The health regeneration is 2x stronger while out of combat.",
-        ability_1: "Pounce: Leap forward before slamming down to the ground, dealing 80, 100, 140, 170, 200 + 8% Health physical damage to nearby enemies. The leap can be cancelled early by basic attacking. Behemoth: Range increases by 65%.",
-        ability_2: "Boulder Throw: Rip a boulder from the earth and carry it for up to 5s. Rampage can throw the boulder, dealing 90, 140, 190, 240, 290 + 80% AP magical damage to all enemies in its path, stunning them for 1.6s, 1.7s, 1.8s, 1.9s, 2s. Shatters on contact with enemy heroes. Behemoth: Throw the boulder instantly. ",
-        ability_3: "Containment Fence: Pound the ground with each fist, dealing 100, 130, 160, 190, 220 + 50% AP physical damage over 2 hits to nearby enemies and slowing them by 20% for 1.25s. Behemoth: Cooldown is decreased by 50%.",
-        ultimate: "Behometh: Become enraged, growing in size and altering Rampage's abilities for 8s, 9s, 10s. During this time he gains 250, 400, 550 maximum health. While Behemoth is active, Rampage gain the effects of King Of The Jungle, and its health regeneration is multiplied by a factor of 4x.",
-        basic_attack: 4,
-        ability_power: 4,
-        durability: 7,
-        mobility: 3,
-        difficulty: 5,
-        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/heros/rampage.webp"
+        name: "Shinbi",
+        role: "Offlane", 
+        auto: "Cutting Edge: Melee basic attack dealing 47 + 80% AP physical damage.",
+        passive: "Biting Melody: Basic attacks deal an additional 10 + 12% MP magical damage on hit. Periodically, Biting Melody deals 4x damage and applies a stack of Track. Damaging an enemy hero with an ability decreases this cooldown by 1s.",
+        ability_1: "Rushing Beat: Dash forward a fixed distance dealing 40, 55, 70, 85, 100 + 45% MP magical damage to all enemies Shinbi passes through. Rushing Beat can be retriggered within 3s of casting to dash a second time at no cost.",
+        ability_2: "Line Tempo: Summon a Spirit Wolf that runs in a straight line and passes through all enemy targets, dealing 65, 95, 125, 155, 185 + 60% MP magical damage.",
+        ability_3: "Circle Rhythm: Summon 4 Spirit Wolves which circle Shinbi for 3s, granting a 30, 50, 70, 90, 110 + 45% MP shield for the duration and after the wolves expire. The wolves deal 12, 19, 26, 33, 40 + 12% MP magical damage per second to nearby enemies.",
+        ultimate: "All Kill!: Passive: Dealing damage to enemy heroes with abilities applies Track for 8s, stacking up to 8 times. Active: Summon a pack of Spirit Wolves to attack the target with the most Track stacks, dealing 50, 85, 120 + 16% MP magical damage per Spirit Wolf.",
+        basic_attack: 3,
+        ability_power: 8,
+        durability: 3,
+        mobility: 5,
+        difficulty: 6,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/heros/shinbi.webp"
     },
     {
-        name: "Rampage",
-        role: "Jungle", 
-        auto: "Swipe: Melee basic attack dealing 54 + 90% AP physical damage.",
-        passive: "King of the Jungle: Rampage gains 19% attack speed and + 0.4% Health health regeneration while in the Jungle. The health regeneration is 2x stronger while out of combat.",
-        ability_1: "Pounce: Leap forward before slamming down to the ground, dealing 80, 100, 140, 170, 200 + 8% Health physical damage to nearby enemies. The leap can be cancelled early by basic attacking. Behemoth: Range increases by 65%.",
-        ability_2: "Boulder Throw: Rip a boulder from the earth and carry it for up to 5s. Rampage can throw the boulder, dealing 90, 140, 190, 240, 290 + 80% AP magical damage to all enemies in its path, stunning them for 1.6s, 1.7s, 1.8s, 1.9s, 2s. Shatters on contact with enemy heroes. Behemoth: Throw the boulder instantly. ",
-        ability_3: "Containment Fence: Pound the ground with each fist, dealing 100, 130, 160, 190, 220 + 50% AP physical damage over 2 hits to nearby enemies and slowing them by 20% for 1.25s. Behemoth: Cooldown is decreased by 50%.",
-        ultimate: "Behometh: Become enraged, growing in size and altering Rampage's abilities for 8s, 9s, 10s. During this time he gains 250, 400, 550 maximum health. While Behemoth is active, Rampage gain the effects of King Of The Jungle, and its health regeneration is multiplied by a factor of 4x.",
-        basic_attack: 4,
-        ability_power: 4,
-        durability: 7,
-        mobility: 3,
-        difficulty: 5,
-        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/heros/rampage.webp"
+        name: "Sparrow",
+        role: "Carry", 
+        auto: "Bow Shot: Ranged basic attack dealing 51 + 80% physical damage.",
+        passive: "Relentless: Sparrow's basic attacks and abilities apply stacks of Relentless to enemy heroes. Her basic attacks against targets afflicted by Relentless deal an additional 0.5% of their maximum health as bonus physical damage on-hit, per stack.",
+        ability_1: "Piercing Shot: Charge a terrain piercing arrow, reaching 50-100% maximum power after one second and dealing up to 90, 135, 180, 225, 270 + 150% AP physical damage to all enemies in its path. Targets afflicted by Relentless receive 5% additional damage per stack.",
+        ability_2: "Hail of Arrows: Release a volley of arrows that rain down over 2.5s, dealing 80, 110, 140, 170, 200 + 150% physical damage to all enemies in the area over 5 hits. Enemies struck by Hail Of Arrows are slowed by 28%, 31%, 34%, 37%, 40% for 0.8s.",
+        ability_3: "Heightened Senses: Sparrow focuses her mind, gaining 30%, 35%, 40%, 45%, 50% attack speed for 3s. Landing basic attacks while Heightened Senses is active extends its duration by 0.5s, up to a maximum of 6s.",
+        ultimate: "Inner Fire: Invoke Sparrow's blazing spirit, augmenting her Bow Shot to release a fan of 3 piercing arrows for 6s. During this time, Sparrow gains 200 attack range, 10, 25, 40 physical power, and 3% movement speed. Side arrows deal 50%, 60%, 70% of Bow Shot's damage.",
+        basic_attack: 10,
+        ability_power: 2,
+        durability: 1,
+        mobility: 2,
+        difficulty: 3,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/heros/sparrow.webp"
     },
     {
-        name: "Rampage",
-        role: "Jungle", 
-        auto: "Swipe: Melee basic attack dealing 54 + 90% AP physical damage.",
-        passive: "King of the Jungle: Rampage gains 19% attack speed and + 0.4% Health health regeneration while in the Jungle. The health regeneration is 2x stronger while out of combat.",
-        ability_1: "Pounce: Leap forward before slamming down to the ground, dealing 80, 100, 140, 170, 200 + 8% Health physical damage to nearby enemies. The leap can be cancelled early by basic attacking. Behemoth: Range increases by 65%.",
-        ability_2: "Boulder Throw: Rip a boulder from the earth and carry it for up to 5s. Rampage can throw the boulder, dealing 90, 140, 190, 240, 290 + 80% AP magical damage to all enemies in its path, stunning them for 1.6s, 1.7s, 1.8s, 1.9s, 2s. Shatters on contact with enemy heroes. Behemoth: Throw the boulder instantly. ",
-        ability_3: "Containment Fence: Pound the ground with each fist, dealing 100, 130, 160, 190, 220 + 50% AP physical damage over 2 hits to nearby enemies and slowing them by 20% for 1.25s. Behemoth: Cooldown is decreased by 50%.",
-        ultimate: "Behometh: Become enraged, growing in size and altering Rampage's abilities for 8s, 9s, 10s. During this time he gains 250, 400, 550 maximum health. While Behemoth is active, Rampage gain the effects of King Of The Jungle, and its health regeneration is multiplied by a factor of 4x.",
-        basic_attack: 4,
-        ability_power: 4,
-        durability: 7,
-        mobility: 3,
-        difficulty: 5,
-        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/heros/rampage.webp"
+        name: "Steel",
+        role: "Offlane", 
+        auto: "Punch: Melee basic attack dealing 53 + 90% AP physical damage.",
+        passive: "Battering Barrier: Each time Steel immobilizes an enemy hero with an ability, he gains a 10 + 2% Health shield for 3.5s.",
+        ability_1: "Shield Bash: Swipe forward with Steel's shield, dealing 40, 70, 100, 130, 160 + 50% MP(+4% of the target's maximum health) magical damage to all enemies in front of him and stunning them for 0.5s.",
+        ability_2: "Bull Rush: Charge forward, dealing 80, 120, 160, 200, 240 + 70% MP magical damage to all enemies in Steel's path. Enemy heroes struck by Bull Rush are knocked back. Monsters and minions are stunned for 2s.",
+        ability_3: "Force Shield: Deploy a disruptive wall of energy, blocking all incoming enemy projectiles for 5s. When an enemy hero first passes through the wall, they take 30, 50, 70, 90, 110 + 50% MP magical damage and are slowed by 10%, 15%, 20%, 25%, 30% for 0.75s.",
+        ultimate: "Shield Slam: Leap into the sky, crashing down at the target location to deal 200, 300, 400 + 80% MP magical damage to all enemies in the area, knocking them up and stunning them for 1.5s.",
+        basic_attack: 1,
+        ability_power: 6,
+        durability: 6,
+        mobility: 5,
+        difficulty: 4,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/heros/steel.webp"
+    },
+    {
+        name: "Fey",
+        role: "Midlane", 
+        auto: "Floret: Ranged basic attack dealing 49 + 60% AP physical damage.",
+        passive: "Nature's Vengeance: Each time The Fey achieves a takedown she spawns an Untamed Growth from the enemy hero's corpse and gains 15% movement speed for 5s.",
+        ability_1: "Untamed Growth: Hurl a small plant which deals 120, 175, 230, 285, 340 + 100% MP magical damage over time to all enemies in the area, exploding after 2.5s. Untamed Growth deals 50% of its damage over its lifetime, and 50% upon exploding.",
+        ability_2: "Bramble Patch: Summon a patch of thorny brambles, dealing 90, 125, 160, 195, 230 + 60% MP magical damage to all enemies that touch them and slowing them by 40% for 0.5s. Bramble Patch persists for 5s before wilting.",
+        ability_3: "Harvest Nettles: Throw an orb of energy, dealing 70, 105, 140, 175, 210 + 55% MP magical damage. Hitting the same target within 6s deals 20% increased damage, stacking up to 3 times. Harvest Nettles refunds 75% of its mana cost upon hitting an enemy hero or killing a unit.",
+        ultimate: "Fly Trap: Plant a magical seedling, awakening a giant fly trap which attaches itself to all nearby enemy heroes. After a brief delay, it pulls its victims inward, dealing 200, 275, 350 + 50% MP magical damage and stunning them for 1.4s.",
+        basic_attack: 1,
+        ability_power: 10,
+        durability: 2,
+        mobility: 1,
+        difficulty: 6,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/heros/fey.webp"
     },
 ]
 heroes_data.each { |hero_data| Hero.create(hero_data) }
@@ -505,7 +535,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/overlord.png"
     },
     {
         name: "Vanguardian",
@@ -531,7 +562,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/vanguardian.png"
     },
     {
         name: "Truesilver Bracelet",
@@ -556,7 +588,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/TruesilverBracelet.png"
     },
     {
         name: "Marshal",
@@ -581,7 +614,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/marshal.png"
     },
     {
         name: "Crystal Tear",
@@ -606,7 +640,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 15,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/crystalTear.png"
     },
     {
         name: "Timewarp",
@@ -632,7 +667,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/timeWarp.png"
     },
     {
         name: "Requiem",
@@ -658,7 +694,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 10,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/requiem.png"
     },
     {
         name: "Fire Blossom",
@@ -683,7 +720,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/fireBlossom.png"
     },
     {
         name: "Elafrost",
@@ -709,7 +747,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/elafrost.png"
     },
     {
         name: "Wellspring",
@@ -735,7 +774,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 20,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/wellspring.png"
     },
     {
         name: "Golem's Gift",
@@ -760,7 +800,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/golemsGift.png"
     },
     {
         name: "Tainted Totem",
@@ -786,7 +827,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/taintedTotem.png"
     },
     {
         name: "Hexbound Bracers",
@@ -812,7 +854,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/hexboundBracers.png"
     },
     {
         name: "Galaxy Greaves",
@@ -838,7 +881,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/galaxyGreaves.png"
     },
     {
         name: "Flux Matrix",
@@ -863,7 +907,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/fluxMatrix.png"
     },
     {
         name: "Dynamo",
@@ -888,7 +933,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/dynamo.png"
     },
     {
         name: "Breach",
@@ -914,7 +960,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/breach.png"
     },
     {
         name: "Bonesaw",
@@ -940,7 +987,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/bonesaw.png"
     },
     {
         name: "Malady",
@@ -966,7 +1014,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/malady.png"
     },
     {
         name: "Azure Core",
@@ -992,7 +1041,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/azureCore.png"
     },
     {
         name: "Tainted Guard",
@@ -1017,7 +1067,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/taintedGuard.png"
     },
     {
         name: "Spellbreaker",
@@ -1043,7 +1094,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/spellbreaker.png"
     },
     {
         name: "Dreambinder",
@@ -1069,7 +1121,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/dreambinder.png"
     },
     {
         name: "Mesmer",
@@ -1094,7 +1147,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/mesmer.png"
     },
     {
         name: "Demon Edge",
@@ -1120,7 +1174,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 5
+        omnivamp: 5,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/demonEdge.png"
     },
     {
         name: "Astral Catalyst",
@@ -1146,7 +1201,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/astralCatalyst.png"
     },
     {
         name: "Unbroken Will",
@@ -1171,7 +1227,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/unbrokenWill.png"
     },
     {
         name: "Wraith Leggings",
@@ -1197,7 +1254,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/wraithLeggings.png"
     },
     {
         name: "Warden's Faith",
@@ -1223,7 +1281,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/wardensFaith.png"
     },
     {
         name: "Perforator",
@@ -1249,7 +1308,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/thePerforator.png"
     },
     {
         name: "Tainted Blade",
@@ -1275,7 +1335,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/taintedBlade.png"
     },
     {
         name: "Storm Breaker",
@@ -1300,7 +1361,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/stormBreaker.png"
     },
     {
         name: "Stonewall",
@@ -1326,8 +1388,10 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
-    },    {
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/stonewall.png"
+    },    
+    {
         name: "Raiment of Renewal",
         classification: "Tier 3",
         category: "health, health_regen, ability_haste, mana",
@@ -1351,7 +1415,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/raimentOfRenewal.png"
     },    {
         name: "Oathkeeper",
         classification: "Tier 3",
@@ -1375,7 +1440,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/oathkeeper.png"
     },    {
         name: "Magnify",
         classification: "Tier 3",
@@ -1400,7 +1466,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/magnify.png"
     },    {
         name: "Lightning Hawk",
         classification: "Tier 3",
@@ -1425,7 +1492,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/lightningHawk.png"
     },    {
         name: "Tainted Bastion",
         classification: "Tier 3",
@@ -1450,7 +1518,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/tainted-bastion.png"
     },    {
         name: "Legacy",
         classification: "Tier 3",
@@ -1475,7 +1544,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/legacy.png"
     },    {
         name: "Dread",
         classification: "Tier 3",
@@ -1500,7 +1570,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/dread.png"
     },    {
         name: "Tectonic Mallet",
         classification: "Tier 3",
@@ -1525,7 +1596,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/tectonicMallet.png"
     },    {
         name: "Frostguard",
         classification: "Tier 3",
@@ -1550,7 +1622,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/frostguard.png"
     },    {
         name: "Combustion",
         classification: "Tier 3",
@@ -1575,7 +1648,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/combustion.png"
     },    {
         name: "Citadel",
         classification: "Tier 3",
@@ -1600,7 +1674,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/citadel.png"
     },    {
         name: "Draconium",
         classification: "Tier 3",
@@ -1625,7 +1700,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/draconum.png"
     },    {
         name: "Void Helm",
         classification: "Tier 3",
@@ -1649,7 +1725,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/voidHelm.png"
     },    {
         name: "Vanquisher",
         classification: "Tier 3",
@@ -1673,7 +1750,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/vanquisher.png"
     },    {
         name: "Tainted Scepter",
         classification: "Tier 3",
@@ -1698,7 +1776,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/taintedScepter.png"
     },    {
         name: "Painweaver",
         classification: "Tier 3",
@@ -1722,7 +1801,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/painweaver.png"
     },    {
         name: "Omen",
         classification: "Tier 3",
@@ -1746,7 +1826,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/omen.png"
     },    {
         name: "Nightfall",
         classification: "Tier 3",
@@ -1770,7 +1851,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/nightfall.png"
     },    {
         name: "Lifebinder",
         classification: "Tier 3",
@@ -1794,7 +1876,8 @@ Item.create([
         life_steal: 10,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/lifebinder.png"
     },    {
         name: "Infernum",
         classification: "Tier 3",
@@ -1818,7 +1901,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/infernum.png"
     },    {
         name: "Deathstalker",
         classification: "Tier 3",
@@ -1843,7 +1927,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/deathstalker.png"
     },    {
         name: "Crystalline Cuirass",
         classification: "Tier 3",
@@ -1867,7 +1952,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/crystallineCuirass.png"
     },    {
         name: "Basilisk",
         classification: "Tier 3",
@@ -1892,7 +1978,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/basilisk.png"
     },    {
         name: "Terminus",
         classification: "Tier 3",
@@ -1917,7 +2004,8 @@ Item.create([
         life_steal: 12,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/terminus.png"
     },    {
         name: "Tainted Rounds",
         classification: "Tier 3",
@@ -1942,7 +2030,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/taintedRounds.png"
     },    {
         name: "Sky Splitter",
         classification: "Tier 3",
@@ -1968,7 +2057,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/skySplitter.png"
     },    {
         name: "Absolution",
         classification: "Tier 3",
@@ -1993,7 +2083,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/absolution.png"
     },    {
         name: "Resolution",
         classification: "Tier 3",
@@ -2018,7 +2109,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/resolution.png"
     },    {
         name: "Viper",
         classification: "Tier 3",
@@ -2043,7 +2135,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/viper.png"
     },    {
         name: "Mindrazor",
         classification: "Tier 3",
@@ -2068,7 +2161,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/mindrazor.png"
     },    {
         name: "Megacosm",
         classification: "Tier 3",
@@ -2093,7 +2187,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/megacosm.png"
     },    {
         name: "Kingsbane",
         classification: "Tier 3",
@@ -2118,7 +2213,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 5
+        omnivamp: 5,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/kingsbane.png"
     },    {
         name: "Caustica",
         classification: "Tier 3",
@@ -2143,7 +2239,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/caustica.png"
     },    {
         name: "World Breaker",
         classification: "Tier 3",
@@ -2168,7 +2265,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/worldBreaker.png"
     },    {
         name: "Salvation",
         classification: "Tier 3",
@@ -2192,7 +2290,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/salvation.png"
     },    {
         name: "Prophecy",
         classification: "Tier 3",
@@ -2217,7 +2316,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/prophecy.png"
     },    {
         name: "Mutilator",
         classification: "Tier 3",
@@ -2242,7 +2342,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 5
+        omnivamp: 5,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/mutilator.png"
     },    {
         name: "Demolisher",
         classification: "Tier 3",
@@ -2267,7 +2368,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/demolisher.png"
     },    {
         name: "Dust Devil",
         classification: "Tier 3",
@@ -2291,7 +2393,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/dustDevil.png"
     },    {
         name: "Augmentation",
         classification: "Tier 3",
@@ -2316,7 +2419,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/augmentation.png"
     },
     {
         name: "Ashbringer",
@@ -2342,7 +2446,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/ashbringer.png"
     },
     {
         name: "Oblivion Crown",
@@ -2367,7 +2472,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/oblivionCrown.png"
     },
     {
         name: "Imperator",
@@ -2392,7 +2498,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/imperator.png"
     },
     {
         name: "Strength Tonic",
@@ -2417,7 +2524,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 10
+        omnivamp: 10,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/strengthTonic.png"
     },
     {
         name: "Stamina Tonic",
@@ -2442,7 +2550,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/staminaTonic.png"
     },
     {
         name: "Protection Tonic",
@@ -2467,7 +2576,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/protectionTonic.png"
     },
     {
         name: "Intellect Tonic",
@@ -2492,7 +2602,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/intellectTonic.png"
     },
     {
         name: "Nyr Warboots",
@@ -2519,7 +2630,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/nyrWarboots.png"
     },
     {
         name: "Saphir's Mantle",
@@ -2545,7 +2657,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/saphirsMantle.png"
     },
     {
         name: "Razorback",
@@ -2571,7 +2684,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/razorback.png"
     },
     {
         name: "Tranquility",
@@ -2598,7 +2712,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/tranquility.png"
     },
     {
         name: "Silentium",
@@ -2625,7 +2740,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/silentium.png"
     },
     {
         name: "Sanctification",
@@ -2652,7 +2768,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/sanctification.png"
     },
     {
         name: "Rift Walkers",
@@ -2679,7 +2796,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/riftWalkers.png"
     },
     {
         name: "Reclamation",
@@ -2705,7 +2823,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/reclamation.png"
     },
     {
         name: "Leaf Song",
@@ -2732,7 +2851,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/leafsong.png"
     },
     {
         name: "Typhoon",
@@ -2759,7 +2879,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/typhoon.png"
     },
     {
         name: "Time Flux Band",
@@ -2784,7 +2905,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/timeFluxBand.png"
     },
     {
         name: "Tempest",
@@ -2810,7 +2932,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/tempest.png"
     },
     {
         name: "Soulbearer",
@@ -2836,7 +2959,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/soulbearer.png"
     },
     {
         name: "Obelisk",
@@ -2863,7 +2987,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/obelisk.png"
     },
     {
         name: "Epoch",
@@ -2889,7 +3014,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/epoch.png"
     },
     {
         name: "Iceskorn Talons",
@@ -2915,7 +3041,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/iceskornTalons.png"
     },
     {
         name: "Fenix",
@@ -2941,7 +3068,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/fenix.png"
     },
     {
         name: "Brutallax",
@@ -2967,7 +3095,8 @@ Item.create([
         life_steal: 5,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/brutallax.png"
     },
     {
         name: "Pacifier",
@@ -2993,7 +3122,8 @@ Item.create([
         life_steal: 5,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/pacifier.png"
     },
     {
         name: "Liberator",
@@ -3019,7 +3149,8 @@ Item.create([
         life_steal: 8,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/liberator.png"
     },
     {
         name: "Eviscerator",
@@ -3045,7 +3176,8 @@ Item.create([
         life_steal: 5,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/eviscerator.png"
     },
     {
         name: "Witchstalker",
@@ -3071,7 +3203,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 6
+        omnivamp: 6,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/witchstalker.png"
     },
     {
         name: "Ortus",
@@ -3097,7 +3230,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/ortus.png"
     },
     {
         name: "Nex",
@@ -3123,7 +3257,8 @@ Item.create([
         life_steal: 0,
         magical_life_steal: 0,
         heal_and_shield_power: 0,
-        omnivamp: 0
+        omnivamp: 0,
+        image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/nex.png"
     }
 ])
 

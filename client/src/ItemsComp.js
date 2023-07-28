@@ -16,16 +16,16 @@ import { MyContext } from "./MyContext";
 import { tokens } from "./theme";
 import { useContext } from "react";
 import React, { useState } from "react";
-import image from "./pics/vanguardian.png";
 
-const ItemsComp = ( {handleCardClick, selectedItemIds, isItemsList } ) => {
+const ItemsComp = ({ handleCardClick, selectedItemIds, isItemsList }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const { items, user} = useContext(MyContext);
+  const { items, user } = useContext(MyContext);
   const [hoveredItemId, setHoveredItemId] = useState(null);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [showCrestItems, setShowCrestItems] = useState(false);
+  const [showConsumable, setShowConsumable] = useState(false);
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
@@ -43,7 +43,15 @@ const ItemsComp = ( {handleCardClick, selectedItemIds, isItemsList } ) => {
     const classificationFilter =
       !showCrestItems || item.classification === "Crest";
 
-    return categoryFilter && searchFilter && classificationFilter;
+    const consumablesFilter =
+      !showConsumable || item.classification === "Consumable";
+
+    return (
+      categoryFilter &&
+      searchFilter &&
+      classificationFilter &&
+      consumablesFilter
+    );
   });
 
   const categoriesSet = new Set();
@@ -54,7 +62,8 @@ const ItemsComp = ( {handleCardClick, selectedItemIds, isItemsList } ) => {
         attribute !== "classification" &&
         attribute !== "category" &&
         attribute !== "name" &&
-        attribute !== "special"
+        attribute !== "special" &&
+        attribute !== "image_url"
       ) {
         categoriesSet.add(attribute);
       }
@@ -62,7 +71,6 @@ const ItemsComp = ( {handleCardClick, selectedItemIds, isItemsList } ) => {
   });
 
   const categories = Array.from(categoriesSet);
-  
 
   const formatCheckboxLabel = (attribute) => {
     const words = attribute.split("_");
@@ -84,6 +92,7 @@ const ItemsComp = ( {handleCardClick, selectedItemIds, isItemsList } ) => {
     setSelectedCategories([]);
     setSearchTerm("");
     setShowCrestItems(false);
+    setShowConsumable(false);
   };
 
   const handleMouseEnter = (itemId) => {
@@ -169,6 +178,7 @@ const ItemsComp = ( {handleCardClick, selectedItemIds, isItemsList } ) => {
             <Checkbox
               checked={selectedCategories.includes("antiheal")}
               onChange={() => handleCategoryChange("antiheal")}
+              style={{color: "white"}}
             />
           }
           label="Antiheal"
@@ -180,9 +190,20 @@ const ItemsComp = ( {handleCardClick, selectedItemIds, isItemsList } ) => {
             <Checkbox
               checked={showCrestItems}
               onChange={(event) => setShowCrestItems(event.target.checked)}
+              style={{color: "white"}}
             />
           }
-          label="Show Crest Items"
+          label="Crest Items"
+        />
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={showConsumable}
+              onChange={(event) => setShowConsumable(event.target.checked)}
+              style={{color: "white"}}
+            />
+          }
+          label="Consumables"
         />
         <Button onClick={handleClearFilters} style={{ color: "white" }}>
           Clear Filters
@@ -225,7 +246,8 @@ const ItemsComp = ( {handleCardClick, selectedItemIds, isItemsList } ) => {
                   onClick={() => handleCardClick(item.id)}
                   style={{
                     // Add selected styles if the item is selected
-                    boxShadow: selectedItemIds === item.id ? '0 0 6px 6px gold' : 'none',
+                    boxShadow:
+                      selectedItemIds === item.id ? "0 0 6px 6px gold" : "none",
                   }}
                 >
                   <CardContent align="center">
@@ -234,7 +256,7 @@ const ItemsComp = ( {handleCardClick, selectedItemIds, isItemsList } ) => {
                     </Typography> */}
                     <CardMedia
                       component="img"
-                      image={image}
+                      image={item.image_url}
                       alt={item.name}
                       style={{
                         width: "100%",
@@ -255,9 +277,10 @@ const ItemsComp = ( {handleCardClick, selectedItemIds, isItemsList } ) => {
                     {/* Render additional item data */}
                     <Box
                       sx={{
-                        backgroundColor: "#ffffff",
-                        color: "#000000",
+                        backgroundColor: "rgba(0, 0, 0, 0.92)",
+                        color: "white",
                         padding: "10px",
+                        fontFamily: "Segoe UI",
                         borderRadius: "4px",
                         position: "absolute",
                         top: "100%", // Position above the card
@@ -280,11 +303,17 @@ const ItemsComp = ( {handleCardClick, selectedItemIds, isItemsList } ) => {
                         if (
                           key !== "id" &&
                           key !== "category" &&
+                          key !== "image_url" &&
                           value !== 0
                         ) {
                           return (
-                            <Typography variant="body2" key={key}>
-                              {formatAttributeKey(key)}: {value}
+                            <Typography
+                              variant="body2"
+                              key={key}
+                              sx={{ fontFamily: "Segoe UI" }}
+                            >
+                              <strong>{formatAttributeKey(key)}:</strong>{" "}
+                              {value}
                             </Typography>
                           );
                         }

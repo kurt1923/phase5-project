@@ -31,7 +31,7 @@ rescue_from ActiveRecord::RecordInvalid, with: :render_unprocessable_entity_resp
     end
 
     def user_params
-        params.permit(:email, :password)
+        params.permit(:email, :password, :username, :favorite_hero)
     end
 
     def render_not_found_response

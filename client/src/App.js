@@ -17,7 +17,7 @@ import HeroPage from "./HeroPage"
 function App() {
   const [theme, colorMode] = useMode();
   const { user, builds, selectedHero } = useContext(MyContext);
-  
+  console.log(user)
 
   return (
     <ColorModeContext.Provider value={colorMode}>

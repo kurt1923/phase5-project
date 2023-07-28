@@ -9,7 +9,7 @@ function MyProvider({ children }) {
   const [builds, setBuilds] = useState([]);
   const [heros, setHeros] = useState([]);
   const navigate = useNavigate();
-  const [selectedHero, setSelectedHero] = useState([])
+  const [selectedHero, setSelectedHero] = useState([]);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [currentBuild, setCurrentBuild] = useState([]);
   const [editingBuild, setEditingBuild] = useState(false);
@@ -54,7 +54,6 @@ function MyProvider({ children }) {
   // function addNewUser(newUser) {
   //   const updateUsers = [...users, newUser];
 
-
   function addNewBuild(newBuild) {
     setBuilds((prevBuilds) => [...prevBuilds, newBuild]);
     setUser((prevUser) => ({
@@ -63,35 +62,38 @@ function MyProvider({ children }) {
     }));
   }
 
-  
-// check later if i can use currentBuild instead of updatedBuild
-function addNewBuildItem(updatedBuild) {
-  setBuilds((prevBuilds) => {
-    const updatedBuilds = prevBuilds.map((build) => {
-      if (build.id === updatedBuild.id) {
-        return {
-          ...build,
-          total_stats: updatedBuild.total_stats,
-          item_specials: updatedBuild.item_specials,
-        };
-      }
-      return build;
-    });
-    return updatedBuilds;
-  });
-}
-
-
-////same code replace this with the one above
-  function handleBuildEdit(updatedBuild) {
+  // check later if i can use currentBuild instead of updatedBuild
+  function addNewBuildItem(updatedBuild) {
     setBuilds((prevBuilds) => {
       const updatedBuilds = prevBuilds.map((build) => {
         if (build.id === updatedBuild.id) {
-          return updatedBuild;
+          return {
+            ...build,
+            total_stats: updatedBuild.total_stats,
+            item_specials: updatedBuild.item_specials,
+          };
         }
         return build;
       });
       return updatedBuilds;
+    });
+  }
+
+  ////same code replace this with the one above
+  function handleBuildEdit(updatedBuild) {
+    setBuilds((prevBuilds) => {
+      return prevBuilds.map((build) => {
+        return build.id === updatedBuild.id ? updatedBuild : build;
+      });
+    });
+  
+    setUser((prevUser) => {
+      return {
+        ...prevUser,
+        builds: prevUser.builds.map((build) => {
+          return build.id === updatedBuild.id ? updatedBuild : build;
+        }),
+      };
     });
   }
 
@@ -122,7 +124,7 @@ function addNewBuildItem(updatedBuild) {
         findCurrentBuild,
         heros,
         selectedHero,
-        setSelectedHero
+        setSelectedHero,
       }}
     >
       {children}

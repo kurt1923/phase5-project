@@ -8,14 +8,40 @@ import {
   Box,
 } from "@mui/material";
 import image from "./pics/Gideon.webp";
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { MyContext } from "./MyContext";
+import { useNavigate } from "react-router-dom";
 
 const BuildInfoComp = ({ colors, isNonMobile }) => {
-  const { setEditingBuild, findCurrentBuild } = useContext(MyContext);
+  const { setEditingBuild, findCurrentBuild, heros } = useContext(MyContext);
+  const navigate = useNavigate();
+  // const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    // Check if currentBuild is not present, and navigate away to '/builds/create'
+    if (!findCurrentBuild) {
+      navigate("/builds/myBuilds");
+    }
+  }, [findCurrentBuild, navigate]);
 
-  console.log(findCurrentBuild.item_specials);
+  // useEffect(() => {
+  //   // Check if findCurrentBuild is not null, and set loading to false
+  //   if (findCurrentBuild) {
+  //     setLoading(false);
+  //   }
+  // }, [findCurrentBuild]);
 
+  const buildPic = (findCurrentBuild) => {
+    if (heros.length === 0) {
+      // Heroes data is not available yet, show a placeholder image or loading spinner
+      return image;
+    }
+    const heroPic = heros.find((hero) => hero.name === findCurrentBuild.hero);
+    return heroPic.image_url;
+  };
+  console.log(findCurrentBuild);
+  if (!findCurrentBuild) {
+    return <div>Loading...</div>;
+  }
   return (
     <Box
       position="relative"
@@ -33,12 +59,12 @@ const BuildInfoComp = ({ colors, isNonMobile }) => {
             {/* Image */}
             <Grid item xs={12} md={3}>
               <img
-                src={image}
+                src={buildPic(findCurrentBuild)}
                 alt="Build Image"
                 style={{
                   width: "100%",
                   height: "100%",
-                  padding: "10px",
+                  padding: "3px",
                   borderRadius: "5px",
                   boxShadow: "0 0 6px 6px #ffffff",
                 }}
@@ -47,12 +73,9 @@ const BuildInfoComp = ({ colors, isNonMobile }) => {
 
             {/* Info */}
             <Grid item xs={12} md={9}>
-            <Box
-                padding="10px"
-              >
+              <Box padding="10px">
                 <Typography
                   variant="h3"
-                  key={findCurrentBuild.id}
                   style={{
                     color: "#ffffff",
                     fontWeight: "bold",
@@ -64,25 +87,25 @@ const BuildInfoComp = ({ colors, isNonMobile }) => {
                 >
                   Build Info
                 </Typography>
-                <Typography variant="body1" style={{ color: "#ffffff", textAlign: "center" }}>
+                <Typography
+                  variant="body1"
+                  key={findCurrentBuild.id}
+                  style={{ color: "#ffffff", textAlign: "center" }}
+                >
                   {findCurrentBuild?.info}
                 </Typography>
               </Box>
             </Grid>
           </Grid>
         </Grid>
-
         {/* Second row: Stats and Specials */}
         <Grid item xs={12}>
           <Grid container spacing={2}>
             {/* Stats */}
             <Grid item xs={12} md={3}>
-            <Box
-                padding="10px"
-              >
+              <Box padding="10px">
                 <Typography
                   variant="h3"
-                  key={findCurrentBuild.id}
                   style={{
                     color: "#ffffff",
                     fontWeight: "bold",
@@ -94,23 +117,22 @@ const BuildInfoComp = ({ colors, isNonMobile }) => {
                 >
                   Stats
                 </Typography>
-                {Object.entries(findCurrentBuild.total_stats).map(([key, value]) => (
-                  <Typography
-                    key={key}
-                    variant="body1"
-                    style={{ color: "#ffffff", textAlign: "center" }}
-                  >
-                    {`${key}: ${value}`}
-                  </Typography>
-                ))}
+                {Object.entries(findCurrentBuild.total_stats).map(
+                  ([key, value]) => (
+                    <Typography
+                      key={key}
+                      variant="body1"
+                      style={{ color: "#ffffff", textAlign: "center" }}
+                    >
+                      {`${key}: ${value}`}
+                    </Typography>
+                  )
+                )}
               </Box>
             </Grid>
-
             {/* Specials */}
             <Grid item xs={12} md={9}>
-              <Box
-                padding="10px"
-              >
+              <Box padding="10px">
                 <Typography
                   variant="h3"
                   style={{
@@ -124,13 +146,14 @@ const BuildInfoComp = ({ colors, isNonMobile }) => {
                 >
                   Specials
                 </Typography>
-                {findCurrentBuild.item_specials.map((item) => (
+                {findCurrentBuild.item_specials.map((item, index) => (
                   <Typography
-                    key={item.id}
+                    key={index}
                     variant="body1"
                     style={{ color: "#ffffff", textAlign: "center" }}
                   >
-                    <strong>{item.Special.split(":")[0]}</strong>: {item.Special.split(":")[1]}
+                    <strong>{item.Special.split(":")[0]}</strong>:{" "}
+                    {item.Special.split(":")[1]}
                   </Typography>
                 ))}
               </Box>

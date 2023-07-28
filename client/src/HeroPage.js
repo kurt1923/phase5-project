@@ -14,13 +14,11 @@ import {
 } from "@mui/material";
 import { tokens } from "./theme";
 import Header from "./Header";
-import { Formik, Form, FieldArray } from "formik";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useNavigate } from "react-router-dom";
 import React, { useContext, useEffect, useState } from "react";
 import { MyContext } from "./MyContext";
 import background from "./pics/predwallpaper1.jpg";
-import image from "./pics/Crunch.webp";
 import AutoIcon from "@mui/icons-material/GpsFixed";
 import PassiveIcon from "@mui/icons-material/RadioButtonUnchecked";
 import AbilitiesIcon from "@mui/icons-material/StarBorderPurple500";
@@ -117,7 +115,7 @@ console.log(selectedHero)
             }}
           />
           <Box>
-            <Typography variant="h3" sx={{ mb: 2, mt: 2 }}>
+            <Typography variant="h2" sx={{ mb: 2, mt: 2 }}>
               {selectedHero.name}
             </Typography>
             <Typography variant="h6" sx={{ mb: 2, fontWeight: "bold" }}>

@@ -20,7 +20,7 @@ const Items = () => {
 
   return (
     <Box
-      m="20px"
+      p="20px"
       ml={isCollapsed ? "80px" : "270px"}
       display="flex"
       flexDirection="column"

@@ -33,15 +33,17 @@ class BuildsController < ApplicationController
         render json: build, status: :created
       end
 
-    def update
-        user = find_user
+      def update
+        puts "Updating build..."
+        user = current_user
         build = user.builds.find(params[:id])
         build.update!(build_params)
+        puts "Build updated successfully."
         render json: build
-    end
+      end
 
     def destroy
-        user = find_user
+        user = current_user
         build = user.builds.find(params[:id])
         build.destroy
         head :no_content
@@ -58,11 +60,11 @@ class BuildsController < ApplicationController
     end
 
     def build_params
-        params.permit(:name, :title, :info, :hero, :user_id)
+        params.permit(:id, :name, :title, :info, :hero, :user_id, :wins, :losses, :favorites)
     end
 
     def render_not_found_response
-        render json: { error: "Build not found" }, status: :not_found
+        render json: { error: "Build or User not found" }, status: :not_found
     end
 
     def render_unprocessable_entity_response(invalid)

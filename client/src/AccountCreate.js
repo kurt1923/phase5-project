@@ -16,12 +16,14 @@ const AccountCreate = () => {
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
   const [error, setError] = useState(null);
-  const { isCollapsed, setUser, user } = useContext(MyContext);
+  const { isCollapsed, setUser, user, heros } = useContext(MyContext);
   const initialValues = {
+    username: "",
     email: "",
     password: "",
+    favorite_hero: "",
   };
-
+console.log(initialValues)
   function updateEmployees(values) {
     fetch("/users", {
       method: "POST",
@@ -42,7 +44,7 @@ const AccountCreate = () => {
       }
     });
   }
-  
+
   return (
     <Box
       p={"20px"}
@@ -104,6 +106,24 @@ const AccountCreate = () => {
                   fullWidth
                   variant="filled"
                   type="text"
+                  label="Username"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  value={values.username}
+                  name="username"
+                  error={!!touched.username && !!errors.username}
+                  helperText={touched.username && errors.username}
+                  sx={{
+                    gridColumn: "span 2",
+                    color: colors.primary[100],
+                    marginBottom: "10px",
+                    fontWeight: "bolder",
+                  }}
+                />
+                <TextField
+                  fullWidth
+                  variant="filled"
+                  type="text"
                   label="Email"
                   onBlur={handleBlur}
                   onChange={handleChange}
@@ -136,6 +156,30 @@ const AccountCreate = () => {
                     fontWeight: "bolder",
                   }}
                 />
+                <TextField
+                  name="favorite_hero"
+                  label="Favorite Hero"
+                  fullWidth
+                  placeholder="Hero"
+                  select={true}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.favorite_hero}
+                  error={!!touched.favorite_hero && !!errors.favorite_hero}
+                  helperText={touched.favorite_hero && errors.favorite_hero}
+                  sx={{
+                    gridColumn: "span 2",
+                    color: colors.primary[100],
+                    marginBottom: "10px",
+                    fontWeight: "bolder",
+                  }}
+                >
+                  {heros.map((hero) => (
+                    <MenuItem key={hero.id} value={hero.name}>
+                      {hero.name}
+                    </MenuItem>
+                  ))}
+                </TextField>
                 <Box
                   display="flex"
                   justifyContent="center"

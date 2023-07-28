@@ -13,9 +13,10 @@ import Heros from "@mui/icons-material/Groups2";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
 import ItemsIcon from "@mui/icons-material/HealthAndSafety";
-import logo from "/home/aizen/development/code/phase5/phase5-project/client/src/pics/countess.webp";
 import React, { useContext } from "react";
 import { MyContext } from "../MyContext";
+import logo1 from "../pics/newlogo.png";
+import placeholder from "../pics/logo.png";
 
 const Item = ({ title, to, icon, selected, setSelected, onClick }) => {
   const theme = useTheme();
@@ -48,11 +49,44 @@ const Item = ({ title, to, icon, selected, setSelected, onClick }) => {
 const Sidebar = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const { handleLogoutClick, user, setIsCollapsed, isCollapsed, setEditingBuild, setCurrentBuild, handleSidebarItemClick } = useContext(MyContext);
+  const {
+    handleLogoutClick,
+    user,
+    setIsCollapsed,
+    isCollapsed,
+    setEditingBuild,
+    setCurrentBuild,
+    handleSidebarItemClick,
+    heros,
+  } = useContext(MyContext);
   // const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
 
-
+  const displayFavoriteHeroImage = () => {
+    if (heros.length === 0) {
+      // Heroes data is not available yet, show a placeholder image or loading spinner
+      return (
+        <img
+          alt="profile-user"
+          width="100px"
+          height="100px"
+          src={placeholder}
+          style={{ cursor: "pointer", borderRadius: "50%" }}
+        />
+      );
+    }
+    const heroPic = heros.find((hero) => hero.name === user.favorite_hero);
+    return (
+      <img
+        alt="profile-user"
+        width="120px"
+        height="120px"
+        src={heroPic.image_url}
+        style={{ cursor: "pointer", borderRadius: "50%" }}
+      />
+    );
+  };
+  console.log(user);
 
   return (
     <Box
@@ -103,9 +137,11 @@ const Sidebar = () => {
                 alignItems="center"
                 ml="15px"
               >
-                <Typography variant="h3" color={colors.grey[100]}>
-                  PBC
-                </Typography>
+                <img src={logo1} alt="Logo" width={164} height={40} />
+
+                {/* <Typography variant="h3" color={colors.grey[100]}>
+                PBC
+                </Typography> */}
                 <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
                   <MenuOutlinedIcon />
                 </IconButton>
@@ -116,40 +152,32 @@ const Sidebar = () => {
           {!isCollapsed && (
             <Box mb="25px">
               <Box display="flex" justifyContent="center" alignItems="center">
-                <img
-                  alt="profile-user"
-                  width="100px"
-                  height="100px"
-                  src={logo}
-                  style={{ cursor: "pointer", borderRadius: "50%" }}
-                />
+                {/* Conditionally display the favorite hero's image */}
+                {user === null ? (
+                  <img
+                    alt="profile-user"
+                    width="100px"
+                    height="100px"
+                    src={placeholder}
+                    style={{ cursor: "pointer", borderRadius: "50%" }}
+                  />
+                ) : (
+                  displayFavoriteHeroImage() // Call the function here
+                )}
               </Box>
-              {user === null ? (
-                <Box textAlign="center">
-                  <Typography
-                    variant="h3"
-                    color={colors.grey[100]}
-                    fontWeight="bold"
-                    sx={{ m: "10px 0 3px 0" }}
-                  >
-                    PBC
-                  </Typography>
-                </Box>
-              ) : (
-                <Box textAlign="center">
-                  <Typography
-                    variant="h3"
-                    color={colors.grey[100]}
-                    fontWeight="bold"
-                    sx={{ m: "10px 0 3px 0" }}
-                  >
-                    {user ? user.email : "TAPS Nav"}
-                  </Typography>
-                  <Typography variant="h5" color={colors.greenAccent[500]}>
-                    Predecessor Builds
-                  </Typography>
-                </Box>
-              )}
+              <Box textAlign="center">
+                <Typography
+                  variant="h3"
+                  color={colors.grey[100]}
+                  fontWeight="bold"
+                  sx={{ m: "10px 0 3px 0" }}
+                >
+                  {user ? user.username : "Guest"}
+                </Typography>
+                <Typography variant="h5" color={colors.greenAccent[500]}>
+                  Predecessor Builds
+                </Typography>
+              </Box>
             </Box>
           )}
 

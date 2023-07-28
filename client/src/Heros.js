@@ -1,85 +1,111 @@
 import {
-    Box,
-    Typography,
-    useTheme,
-    Button,
-    TextField,
-    MenuItem,
-    Grid,
-    CardContent,
-    Card,
-    CardMedia,
-  } from "@mui/material";
-  import { tokens } from "./theme";
-  import Header from "./Header";
-  import { Formik, Form, FieldArray } from "formik";
-  import useMediaQuery from "@mui/material/useMediaQuery";
-  import { useNavigate } from "react-router-dom";
-  import { useState } from "react";
-  import React, { useContext } from "react";
-  import { MyContext } from "./MyContext";
-  import background from "./pics/predwallpaper1.jpg";
-  import image from "./pics/Crunch.webp";
-  
-  
-  const Heros = () => {
-    const theme = useTheme();
-    const colors = tokens(theme.palette.mode);
-    const isNonMobile = useMediaQuery("(min-width:700px)");
-    const { user, isCollapsed, heros, selectedHero, setSelectedHero } = useContext(MyContext);
-    const navigate = useNavigate();
-    // array that matches the current user id
-   
-  
-    const handleCardClick = (hero) => () => {
-      navigate(`/heros/${hero.id}`);
-      setSelectedHero(hero);
-      };
-      console.log(selectedHero)
-  
-      return (
-        <Box
-          p={"20px"}
-          ml={isCollapsed ? "80px" : "270px"}
-          display="flex"
-          flexDirection="column"
-          overflow="visible"
-          sx={{
-            backgroundImage: `url(${background})`,
-            backgroundSize: "cover",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "center",
-            height: "100vh",
-            position: "relative",
-            overflow: "scroll",
+  Box,
+  Typography,
+  useTheme,
+  Button,
+  TextField,
+  MenuItem,
+  Grid,
+  CardContent,
+  Card,
+  CardMedia,
+  FormControl,
+  InputLabel,
+  Select,
+} from "@mui/material";
+import { tokens } from "./theme";
+import Header from "./Header";
+import { Formik, Form, FieldArray } from "formik";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import React, { useContext } from "react";
+import { MyContext } from "./MyContext";
+import background from "./pics/predwallpaper1.jpg";
+
+
+const Heros = () => {
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+  const isNonMobile = useMediaQuery("(min-width:700px)");
+  const { user, isCollapsed, heros, selectedHero, setSelectedHero } = useContext(
+    MyContext
+  );
+  const navigate = useNavigate();
+  const [selectedRole, setSelectedRole] = useState("All");
+  const handleCardClick = (hero) => () => {
+    navigate(`/heros/${hero.id}`);
+    setSelectedHero(hero);
+  };
+  console.log(selectedHero);
+
+  const filteredHeroes = selectedRole === "All" ? heros : heros.filter((hero) => hero.role.includes(selectedRole));
+
+  return (
+    <Box
+      p={"20px"}
+      ml={isCollapsed ? "80px" : "270px"}
+      display="flex"
+      flexDirection="column"
+      overflow="visible"
+      sx={{
+        backgroundImage: `url(${background})`,
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        height: "100vh",
+        position: "relative",
+        overflow: "scroll",
+      }}
+    >
+      <Header title="Heroes" subtitle="Select a hero to learn more" />
+      
+      <FormControl variant="outlined" sx={{ ml: 8, minWidth: 200, backgroundColor: "rgba(120, 79, 223, 0.15)", maxWidth: 250  }}>
+        <InputLabel htmlFor="role-filter">Filter by Role</InputLabel>
+        <Select
+          value={selectedRole}
+          onChange={(event) => setSelectedRole(event.target.value)}
+          label="Filter by Role"
+          inputProps={{
+            name: "role-filter",
+            id: "role-filter",
           }}
         >
-          <Header title="Heroes" subtitle="Select a hero to learn more" />
-          <Box
-            position="relative"
-            backgroundColor="rgba(0, 0, 0, 0.5)"
-            borderRadius={2}
-            p={2}
-            mt={2}
-            boxShadow={1}
-            display="flex"
-            flexWrap="wrap"
-            justifyContent="flex-start"
-            alignItems="center"
-          >
-            {heros.map((hero) => (
+          <MenuItem value="All">All</MenuItem>
+          <MenuItem value="Carry">Carry</MenuItem>
+          <MenuItem value="Offlane">Offlane</MenuItem>
+          <MenuItem value="Midlane">Midlane</MenuItem>
+          <MenuItem value="Jungle">Jungle</MenuItem>
+          <MenuItem value="Support">Support</MenuItem>
+        </Select>
+      </FormControl>
+      
+      <Box
+        position="relative"
+        backgroundColor="rgba(0, 0, 0, 0.5)"
+        borderRadius={2}
+        p={2}
+        mt={2}
+        mr={2}
+        ml={2}
+        boxShadow={1}
+      >
+        <Grid
+          container
+          spacing={2}
+          justifyContent="flex-start"
+          alignItems="center"
+        >
+          {filteredHeroes.map((hero) => (
+            <Grid item key={hero.id} xs={6} sm={4} md={3} lg={2}>
               <Card
-                key={hero.id}
                 elevation={10}
                 onClick={handleCardClick(hero)}
                 sx={{
-                  backgroundColor: "#1C2833", // Steel Blue color
+                  backgroundColor: "rgba(120, 79, 223, 0.15)",
                   border: "1px solid #e1e2fe",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  width: isNonMobile ? "200px" : "150px",
-                  height: isNonMobile ? "300px" : "200px",
-                  margin: "10px",
+                  width: "100%",
+                  height: "100%",
                   borderRadius: "10px",
                   boxShadow: "0 2px 6px rgba(0, 0, 0, 0.3)", // Add a subtle box shadow
                   transition: "box-shadow 0.3s, transform 0.2s", // Add transition effect
@@ -123,10 +149,12 @@ import {
                   </Typography>
                 </CardContent>
               </Card>
-            ))}
-          </Box>
-        </Box>
-      );
-    };
-    
-    export default Heros;
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
+    </Box>
+  );
+};
+
+export default Heros;

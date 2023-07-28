@@ -120,7 +120,7 @@ const BuildItems = ({
                     </Typography> */}
                       <CardMedia
                         component="img"
-                        image={image}
+                        image={item.image_url}
                         alt={item.name}
                         style={{
                           width: "100%",
