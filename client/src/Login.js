@@ -15,7 +15,9 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import React, { useContext } from "react";
 import { MyContext } from "./MyContext";
-import background from "./pics/predwallpaper1.jpg";
+import background from "./pics/phase.jpg";
+import Alert from "@mui/material/Alert";
+
 
 const Login = () => {
   const navigate = useNavigate();
@@ -36,12 +38,11 @@ const Login = () => {
       }),
     }).then((res) => {
       if (res.ok) {
-        // navigate("/putpage here");
         res.json().then((user) => setUser(user));
+        navigate("/UserDash");
       } else {
         res.json().then((json) => {
           setError(json.errors);
-          alert("incorrect email or password");
         });
       }
     });
@@ -142,9 +143,9 @@ const Login = () => {
                 <Typography component="h1" variant="h5" color="red">
                   {error
                     ? error.map((e) => (
-                        <p className="error" key={e}>
+                        <Alert severity="error" key={e}>
                           {e}
-                        </p>
+                        </Alert>
                       ))
                     : null}
                 </Typography>

@@ -3,14 +3,14 @@ import {
   Box,
   Typography,
   useTheme,
-  Button,
+  Paper,
   TextField,
   MenuItem,
   Grid,
-  CardContent,
-  Card,
+  styled,
+  tooltipClasses,
   CardMedia,
-  LinearProgress,
+  Tooltip,
 } from "@mui/material";
 import { tokens } from "./theme";
 import Header from "./Header";
@@ -18,12 +18,23 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { useNavigate } from "react-router-dom";
 import React, { useContext, useEffect, useState } from "react";
 import { MyContext } from "./MyContext";
-import background from "./pics/predwallpaper1.jpg";
+import background from "./pics/morighesh.jpg";
 import AutoIcon from "@mui/icons-material/GpsFixed";
 import PassiveIcon from "@mui/icons-material/RadioButtonUnchecked";
 import AbilitiesIcon from "@mui/icons-material/StarBorderPurple500";
 import UltimateIcon from "@mui/icons-material/Stars";
-import DonutSmallIcon from '@mui/icons-material/DonutSmall';
+import DonutSmallIcon from "@mui/icons-material/DonutSmall";
+
+const LightTooltip = styled(({ className, ...props }) => (
+  <Tooltip {...props} classes={{ popper: className }} />
+))(({ theme }) => ({
+  [`& .${tooltipClasses.tooltip}`]: {
+    backgroundColor: theme.palette.common.white,
+    color: "rgba(0, 0, 0, 0.87)",
+    boxShadow: theme.shadows[1],
+    fontSize: 16,
+  },
+}));
 
 const HeroPage = () => {
   const { user, heros, isCollapsed, selectedHero, setSelectedHero } =
@@ -54,7 +65,7 @@ const HeroPage = () => {
       <span
         key={index}
         style={{
-          color: "blue",
+          color: "rgba(120, 79, 223, 0.85)",
           marginRight: "4px",
           fontWeight: "bold",
           fontSize: "1.6rem",
@@ -63,10 +74,10 @@ const HeroPage = () => {
         <DonutSmallIcon />
       </span>
     ));
-  
+
     return dashes;
   };
-console.log(selectedHero)
+  console.log(selectedHero);
   return (
     <Box
       p={"20px"}
@@ -79,7 +90,7 @@ console.log(selectedHero)
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
         backgroundPosition: "center",
-        height: "100vh",
+        minHeight: "100vh",
         position: "relative",
         overflow: "scroll",
       }}
@@ -92,170 +103,274 @@ console.log(selectedHero)
         p={2}
         mt={2}
         boxShadow={1}
+        display="flex"
+        flexDirection="column"
+        // Add breakpoints to change the size based on screen width
+        sx={{
+          width: "100%", // Fills the available width
+          maxWidth: "880px", // Set a maximum width for large screens
+          margin: "0 auto", // Center horizontally
+        }}
       >
-        <Box
-          display="flex"
-          flexDirection={{ xs: "column", md: "row" }}
-          justifyContent={{ xs: "center", md: "flex-start" }}
-          alignItems="flex-start" // Adjusted alignment
-        >
-          <CardMedia
-            component="img"
-            src={selectedHero.image_url}
-            alt="Hero Image"
-            height="100%"
-            width="100%"
-            sx={{
-              mr: { xs: 0, md: 4 },
-              objectFit: "contain",
-              height: "auto",
-              maxWidth: isNonMobile ? "30%" : "60%",
-              borderRadius: "3px",
-              boxShadow: "0 0 6px 4px #ffffff",
-            }}
-          />
-          <Box>
-            <Typography variant="h2" sx={{ mb: 2, mt: 2 }}>
+        <Grid container alignItems="center" spacing={1} justifyContent="center">
+          {/* Hero Image */}
+          <Grid item xs={6} md={4} lg={4} xl={5}>
+            <Typography variant="h2" sx={{ mb: 1, }} textAlign="center">
               {selectedHero.name}
             </Typography>
-            <Typography variant="h6" sx={{ mb: 2, fontWeight: "bold" }}>
+            <Typography
+              variant="h5"
+              sx={{ mb: 4, fontWeight: "bold" }}
+              textAlign="center"
+            >
               Role: {selectedHero.role}
             </Typography>
-            <Box sx={{ mt: 4 }}>
-              <Typography variant="h4" sx={{ mb: 1 }}>
-                Abilities:
-              </Typography>
-              <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                <AutoIcon sx={{ fontSize: 21, marginRight: 1 }} />
-                <Typography
-                  variant="body1"
-                  sx={{ fontWeight: "bold", marginRight: 4.5 }}
-                >
-                  Auto:
+            <CardMedia
+              component="img"
+              src={selectedHero.image_url}
+              alt="Hero Image"
+              height="80%"
+              width="80%"
+              sx={{
+                objectFit: "contain",
+                borderRadius: "3px",
+                boxShadow: "0 0 6px 4px #ffffff",
+              }}
+            />
+          </Grid>
+          {/* Hero Info */}
+          <Grid item xs={12} md={6} lg={8}>
+            <Box sx={{ display: "flex", flexDirection: "column" }}>
+              <Box sx={{ padding: 3 }}>
+                {/* Abilities */}
+                <Typography variant="h4" sx={{ mb: 1, fontWeight: "bold" }} textAlign="center">
+                  Abilities:
                 </Typography>
-                <Typography variant="body1">{selectedHero.auto}</Typography>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    justifyContent: "center",
+                  }}
+                >
+                  <LightTooltip
+                    title={selectedHero.auto}
+                    enterTouchDelay={0}
+                    placement="top"
+                    arrow
+                    boxShadow={1}
+                  >
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        m: 1,
+                      }}
+                    >
+                      <Paper sx={{ p: 2, bgcolor: "rgba(120, 79, 223, 0.35)" }}>
+                        <AutoIcon fontSize="large" />
+                      </Paper>
+                      <Typography variant="body1" sx={{ color: "white" }}>
+                        Auto
+                      </Typography>
+                    </Box>
+                  </LightTooltip>
+                  <LightTooltip
+                    title={selectedHero.passive}
+                    enterTouchDelay={0}
+                    placement="top"
+                    arrow
+                    boxShadow={1}
+                  >
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        m: 1,
+                      }}
+                    >
+                      <Paper sx={{ p: 2, bgcolor: "rgba(120, 79, 223, 0.35)" }}>
+                        <PassiveIcon fontSize="large" />
+                      </Paper>
+                      <Typography variant="body1" sx={{ color: "white" }}>
+                        Passive
+                      </Typography>
+                    </Box>
+                  </LightTooltip>
+                  <LightTooltip
+                    title={selectedHero.ability_1}
+                    enterTouchDelay={0}
+                    placement="top"
+                    arrow
+                    boxShadow={1}
+                  >
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        m: 1,
+                      }}
+                    >
+                      <Paper sx={{ p: 2, bgcolor: "rgba(120, 79, 223, 0.35)" }}>
+                        <AbilitiesIcon fontSize="large" />
+                      </Paper>
+                      <Typography variant="body1" sx={{ color: "white" }}>
+                        Ability 1
+                      </Typography>
+                    </Box>
+                  </LightTooltip>
+                  <LightTooltip
+                    title={selectedHero.ability_2}
+                    enterTouchDelay={0}
+                    placement="top"
+                    arrow
+                    boxShadow={1}
+                  >
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        m: 1,
+                      }}
+                    >
+                      <Paper sx={{ p: 2, bgcolor: "rgba(120, 79, 223, 0.35)" }}>
+                        <AbilitiesIcon fontSize="large" />
+                      </Paper>
+                      <Typography variant="body1" sx={{ color: "white" }}>
+                        Ability 2
+                      </Typography>
+                    </Box>
+                  </LightTooltip>
+                  <LightTooltip
+                    title={selectedHero.ability_3}
+                    enterTouchDelay={0}
+                    placement="top"
+                    arrow
+                    boxShadow={1}
+                  >
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        m: 1,
+                      }}
+                    >
+                      <Paper sx={{ p: 2, bgcolor: "rgba(120, 79, 223, 0.35)" }}>
+                        <AbilitiesIcon fontSize="large" />
+                      </Paper>
+                      <Typography variant="body1" sx={{ color: "white" }}>
+                        Ability 3
+                      </Typography>
+                    </Box>
+                  </LightTooltip>
+                  <LightTooltip
+                    title={selectedHero.ultimate}
+                    enterTouchDelay={0}
+                    placement="top"
+                    arrow
+                    boxShadow={1}
+                  >
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        m: 1,
+                      }}
+                    >
+                      <Paper sx={{ p: 2, bgcolor: "rgba(120, 79, 223, 0.35)" }}>
+                        <UltimateIcon fontSize="large" />
+                      </Paper>
+                      <Typography variant="body1" sx={{ color: "white" }}>
+                        Ultimate
+                      </Typography>
+                    </Box>
+                  </LightTooltip>
+                </Box>
               </Box>
-              <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                <PassiveIcon sx={{ fontSize: 21, marginRight: 1 }} />
-                <Typography
-                  variant="body1"
-                  sx={{ fontWeight: "bold", marginRight: 2 }}
-                >
-                  Passive:
+              {/* Stats */}
+              <Box
+                sx={{
+                  mt: 4,
+                  display: "flex",
+                  flexDirection: "column",
+                  backgroundColor: "rgba(15, 15, 15, 0.55)",
+                  margin: "auto",
+                  padding: "20px",
+                  borderRadius: "10px",
+                  boxShadow: "0 0 6px 4px #ffffff",
+                  /* Remove the following two properties to align stats to the left */
+                  // alignItems: "center",
+                  alignContent: "center",
+                }}
+              >
+                <Typography variant="h4" sx={{ mb: 1, fontWeight: "bold" }}>
+                  Stats:
                 </Typography>
-                <Typography variant="body1">{selectedHero.passive}</Typography>
-              </Box>
-              <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                <AbilitiesIcon sx={{ fontSize: 21, marginRight: 1 }} />
-                <Typography
-                  variant="body1"
-                  sx={{ fontWeight: "bold", marginRight: 2 }}
-                >
-                  Ability1:
-                </Typography>
-                <Typography variant="body1">
-                  {selectedHero.ability_1}
-                </Typography>
-              </Box>
-              <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                <AbilitiesIcon sx={{ fontSize: 21, marginRight: 1 }} />
-                <Typography
-                  variant="body1"
-                  sx={{ fontWeight: "bold", marginRight: 2 }}
-                >
-                  Ability2:
-                </Typography>
-                <Typography variant="body1">
-                  {selectedHero.ability_2}
-                </Typography>
-              </Box>
-              <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                <AbilitiesIcon sx={{ fontSize: 21, marginRight: 1 }} />
-                <Typography
-                  variant="body1"
-                  sx={{ fontWeight: "bold", marginRight: 2 }}
-                >
-                  Ability3:
-                </Typography>
-                <Typography variant="body1">
-                  {selectedHero.ability_3}
-                </Typography>
-              </Box>
-              <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                <UltimateIcon sx={{ fontSize: 18, marginRight: 1 }} />
-                <Typography
-                  variant="body1"
-                  sx={{ fontWeight: "bold", marginRight: 1.8 }}
-                >
-                  Ultimate:
-                </Typography>
-                <Typography variant="body1">
-                  {selectedHero.ultimate}
-                </Typography>
+                <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+                  <Typography
+                    variant="body1"
+                    sx={{ fontWeight: "bold", marginRight: 1 }}
+                  >
+                    Basic Attack:
+                  </Typography>
+                  <Typography variant="body1">
+                    {renderDashes(selectedHero.basic_attack)}
+                  </Typography>
+                </Box>
+                <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+                  <Typography
+                    variant="body1"
+                    sx={{ fontWeight: "bold", marginRight: 1 }}
+                  >
+                    Ability Power:
+                  </Typography>
+                  <Typography variant="body1">
+                    {renderDashes(selectedHero.ability_power)}
+                  </Typography>
+                </Box>
+                <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+                  <Typography
+                    variant="body1"
+                    sx={{ fontWeight: "bold", marginRight: 1 }}
+                  >
+                    Durability:
+                  </Typography>
+                  <Typography variant="body1">
+                    {renderDashes(selectedHero.durability)}
+                  </Typography>
+                </Box>
+                <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+                  <Typography
+                    variant="body1"
+                    sx={{ fontWeight: "bold", marginRight: 1 }}
+                  >
+                    Mobility:
+                  </Typography>
+                  <Typography variant="body1">
+                    {renderDashes(selectedHero.mobility)}
+                  </Typography>
+                </Box>
+                <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+                  <Typography
+                    variant="body1"
+                    sx={{ fontWeight: "bold", marginRight: 1 }}
+                  >
+                    Difficulty:
+                  </Typography>
+                  <Typography variant="body1">
+                    {renderDashes(selectedHero.difficulty)}
+                  </Typography>
+                </Box>
               </Box>
             </Box>
-          </Box>
-        </Box>
-        <Box sx={{ mt: 4 }}>
-          <Typography variant="h4" sx={{ mb: 1, fontWeight: "bold" }}>
-            Stats:
-          </Typography>
-          <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-            <Typography
-              variant="body1"
-              sx={{ fontWeight: "bold", marginRight: 1 }}
-            >
-              Basic Attack:
-            </Typography>
-            <Typography variant="body1">
-              {renderDashes(selectedHero.basic_attack)}
-            </Typography>
-          </Box>
-          <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-            <Typography
-              variant="body1"
-              sx={{ fontWeight: "bold", marginRight: 1 }}
-            >
-              Ability Power:
-            </Typography>
-            <Typography variant="body1">
-              {renderDashes(selectedHero.ability_power)}
-            </Typography>
-          </Box>
-          <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-            <Typography
-              variant="body1"
-              sx={{ fontWeight: "bold", marginRight: 1 }}
-            >
-              Durability:
-            </Typography>
-            <Typography variant="body1">
-              {renderDashes(selectedHero.durability)}
-            </Typography>
-          </Box>
-          <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-            <Typography
-              variant="body1"
-              sx={{ fontWeight: "bold", marginRight: 1 }}
-            >
-              Mobility:
-            </Typography>
-            <Typography variant="body1">
-              {renderDashes(selectedHero.mobility)}
-            </Typography>
-          </Box>
-          <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-            <Typography
-              variant="body1"
-              sx={{ fontWeight: "bold", marginRight: 1 }}
-            >
-              Difficulty:
-            </Typography>
-            <Typography variant="body1">
-              {renderDashes(selectedHero.difficulty)}
-            </Typography>
-          </Box>
-        </Box>
+          </Grid>
+        </Grid>
       </Box>
     </Box>
   );

@@ -12,6 +12,9 @@ import Createbuild from "./Createbuild";
 import Mybuilds from "./Mybuilds";
 import Heros from "./Heros"
 import HeroPage from "./HeroPage"
+import UserDash from "./UserDash"
+import { Home } from "@mui/icons-material";
+import HomePage from "./Home";
 
 
 function App() {
@@ -29,12 +32,13 @@ function App() {
           <main className="content">
           <Topbar />
             <Routes>
-              <Route path="/"></Route>
+              <Route path="/" element={<HomePage/>} />
               <Route path="/Heros" element={<Heros/>} />
-              <Route path="/Items" element={<Items />} />
+              <Route path="/Items" element={<Items/>} />
               <Route path="/heros/:id" element={<HeroPage/>} />
               {user !== null || undefined ? (
                 <>
+                  <Route path="/UserDash" element={<UserDash />} />
                   <Route path="/AccountCreate" element={<AccountCreate />} />
                   <Route path="/builds/create" element={<Createbuild />} />
                   <Route path="/builds/myBuilds" element={<Mybuilds />} />

@@ -124,6 +124,7 @@ export const tokens = (mode) => ({
 // mui theme settings
 export const themeSettings = (mode) => {
   const colors = tokens(mode);
+  
   return {
     palette: {
       mode: mode,
@@ -203,6 +204,8 @@ export const themeSettings = (mode) => {
     },
   };
 };
+
+
 
 // context for color mode
 export const ColorModeContext = createContext({

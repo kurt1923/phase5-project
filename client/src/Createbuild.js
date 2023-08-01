@@ -5,18 +5,16 @@ import {
   Button,
   TextField,
   MenuItem,
-  Grid,
-  CardContent,
 } from "@mui/material";
 import { tokens } from "./theme";
 import Header from "./Header";
-import { Formik, Form, FieldArray } from "formik";
+import { Formik, Form } from "formik";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import React, { useContext } from "react";
 import { MyContext } from "./MyContext";
-import background from "./pics/predwallpaper1.jpg";
+import background from "./pics/revenant.jpg";
 import ItemsComp from "./ItemsComp";
 import BuildItems from "./BuildItems";
 import BuildInfoComp from "./BuildInfoComp";
@@ -32,14 +30,13 @@ const Createbuild = () => {
     addNewBuild,
     builds,
     items,
-    addNewBuildItem,
     setBuilds,
     currentBuild,
     setCurrentBuild,
     handleBuildEdit,
     editingBuild,
     setEditingBuild,
-    // findCurrentBuild,
+    setUser
   } = useContext(MyContext);
   const [selectedItemIds, setSelectedItemIds] = useState([]);
   const navigate = useNavigate();
@@ -155,6 +152,14 @@ const Createbuild = () => {
 
         setSelectedBuildItem([]);
         setBuilds(updatedBuilds);
+        setUser((prevUser) => {
+          return {
+            ...prevUser,
+            builds: prevUser.builds.map((build) => {
+              return build.id === updatedBuild.id ? updatedBuild : build;
+            }),
+          };
+        });
       })
       .catch((error) => {
         console.error("Error updating build item:", error);
@@ -368,29 +373,7 @@ console.log(currentBuild)
 };
 export default Createbuild;
 
-// import React, { useState, useEffect } from 'react';
-// import { useLocation, Link } from 'react-router-dom';
 
-// const MyComponent = () => {
-//   const [myState, setMyState] = useState('');
-//   const location = useLocation();
-
-//   useEffect(() => {
-//     return () => {
-//       // Reset the state when navigating away from the page
-//       setMyState('');
-//     };
-//   }, [location]);
-
-//   return (
-//     <div>
-//       <p>Current state: {myState}</p>
-//       <Link to="/other-page">Navigate</Link>
-//     </div>
-//   );
-// };
-
-// export default MyComponent;
 
 // handleFormSubmit breakdown
 // The fetch request is made to create a new build.

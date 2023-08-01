@@ -8,7 +8,8 @@ import { useNavigate } from "react-router-dom";
 import Typography from "@mui/material/Typography";
 import { useState, useContext } from "react";
 import { MyContext } from "./MyContext";
-import background from "./pics/predwallpaper1.jpg";
+import background from "./pics/kira-vs-countess.jpg";
+import Alert from "@mui/material/Alert";
 
 const AccountCreate = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
@@ -24,7 +25,7 @@ const AccountCreate = () => {
     favorite_hero: "",
   };
 console.log(initialValues)
-  function updateEmployees(values) {
+  function updateUser(values) {
     fetch("/users", {
       method: "POST",
       headers: {
@@ -34,7 +35,7 @@ console.log(initialValues)
     }).then((res) => {
       if (res.ok) {
         alert("Admin Created, please login to continue");
-        navigate("/login");
+        navigate("/UserDash");
         res.json().then((user) => setUser(user));
       } else {
         res.json().then((json) => {
@@ -73,13 +74,8 @@ console.log(initialValues)
         // alignItems="center"
         height="100%" // Ensures the box takes full height of the screen
       >
-        <Typography component="h1" variant="h5" color="red">
-          {" "}
-          {error ? "Errors:" + error.map((e) => e).join(", ") : null}
-        </Typography>
-
         <Formik
-          onSubmit={updateEmployees}
+          onSubmit={updateUser}
           initialValues={initialValues}
           validationSchema={checkoutSchema}
         >
@@ -94,7 +90,7 @@ console.log(initialValues)
             <Form onSubmit={handleSubmit}>
               <Box
                 position="relative"
-                backgroundColor="rgba(0, 0, 0, 0.6)" // transparent background color
+                backgroundColor="rgba(0, 0, 0, 0.7)" // transparent background color
                 borderRadius={2}
                 p={3}
                 mx={2}
@@ -115,7 +111,7 @@ console.log(initialValues)
                   helperText={touched.username && errors.username}
                   sx={{
                     gridColumn: "span 2",
-                    color: colors.primary[100],
+                    color: colors.grey[100],
                     marginBottom: "10px",
                     fontWeight: "bolder",
                   }}
@@ -133,7 +129,7 @@ console.log(initialValues)
                   helperText={touched.email && errors.email}
                   sx={{
                     gridColumn: "span 2",
-                    color: colors.primary[100],
+                    color: colors.grey[100],
                     marginBottom: "10px",
                     fontWeight: "bolder",
                   }}
@@ -151,7 +147,7 @@ console.log(initialValues)
                   helperText={touched.password && errors.password}
                   sx={{
                     gridColumn: "span 2",
-                    color: colors.primary[100],
+                    color: colors.grey[100],
                     marginBottom: "10px",
                     fontWeight: "bolder",
                   }}
@@ -180,6 +176,15 @@ console.log(initialValues)
                     </MenuItem>
                   ))}
                 </TextField>
+                <Typography component="h1" variant="h5" color="red">
+                  {error
+                    ? error.map((e) => (
+                        <Alert severity="error" key={e}>
+                          {e}
+                        </Alert>
+                      ))
+                    : null}
+                </Typography>
                 <Box
                   display="flex"
                   justifyContent="center"

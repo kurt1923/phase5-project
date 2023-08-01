@@ -4,7 +4,7 @@ import { tokens } from "./theme";
 import ItemsComp from "./ItemsComp";
 import { useContext } from "react";
 import Header from "./Header";
-import background from "./pics/predwallpaper1.jpg";
+import background from "./pics/twinblast.jpg";
 import React, { useState } from "react";
 
 const Items = () => {
@@ -34,7 +34,7 @@ const Items = () => {
         height: "100vh",
       }}
     >
-      <Header title="Items" subtitle="All Items" />
+      <Header title="Items" subtitle="Search Items" />
       <ItemsComp handleCardClick={handleCardClick} selectedItemIds={selectedItemIds} />
     </Box>
   );

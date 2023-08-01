@@ -58,34 +58,11 @@ const Sidebar = () => {
     setCurrentBuild,
     handleSidebarItemClick,
     heros,
+    displayFavoriteHeroImage,
   } = useContext(MyContext);
   // const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
 
-  const displayFavoriteHeroImage = () => {
-    if (heros.length === 0) {
-      // Heroes data is not available yet, show a placeholder image or loading spinner
-      return (
-        <img
-          alt="profile-user"
-          width="100px"
-          height="100px"
-          src={placeholder}
-          style={{ cursor: "pointer", borderRadius: "50%" }}
-        />
-      );
-    }
-    const heroPic = heros.find((hero) => hero.name === user.favorite_hero);
-    return (
-      <img
-        alt="profile-user"
-        width="120px"
-        height="120px"
-        src={heroPic.image_url}
-        style={{ cursor: "pointer", borderRadius: "50%" }}
-      />
-    );
-  };
   console.log(user);
 
   return (
@@ -139,9 +116,6 @@ const Sidebar = () => {
               >
                 <img src={logo1} alt="Logo" width={164} height={40} />
 
-                {/* <Typography variant="h3" color={colors.grey[100]}>
-                PBC
-                </Typography> */}
                 <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
                   <MenuOutlinedIcon />
                 </IconButton>
@@ -162,7 +136,7 @@ const Sidebar = () => {
                     style={{ cursor: "pointer", borderRadius: "50%" }}
                   />
                 ) : (
-                  displayFavoriteHeroImage() // Call the function here
+                  displayFavoriteHeroImage(user.favorite_hero, 120, 120)
                 )}
               </Box>
               <Box textAlign="center">
@@ -174,7 +148,13 @@ const Sidebar = () => {
                 >
                   {user ? user.username : "Guest"}
                 </Typography>
-                <Typography variant="h5" color={colors.greenAccent[500]}>
+                <Typography
+                  variant="h4"
+                  color="rgba(15, 114, 253, 0.95)"
+                  style={{
+                    textShadow: "0 0 10px rgba(255, 255, 255, .6)",
+                  }}
+                >
                   Predecessor Builds
                 </Typography>
               </Box>
@@ -216,7 +196,7 @@ const Sidebar = () => {
               >
                 <Item
                   title="Dashboard"
-                  to="/admin"
+                  to="/UserDash"
                   icon={<HomeOutlinedIcon />}
                   selected={selected}
                   setSelected={setSelected}

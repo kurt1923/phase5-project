@@ -21,7 +21,7 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import React, { useContext } from "react";
 import { MyContext } from "./MyContext";
-import background from "./pics/predwallpaper1.jpg";
+import background from "./pics/phase2.jpg";
 
 
 const Heros = () => {
@@ -37,7 +37,7 @@ const Heros = () => {
     navigate(`/heros/${hero.id}`);
     setSelectedHero(hero);
   };
-  console.log(selectedHero);
+  
 
   const filteredHeroes = selectedRole === "All" ? heros : heros.filter((hero) => hero.role.includes(selectedRole));
 
@@ -60,7 +60,7 @@ const Heros = () => {
     >
       <Header title="Heroes" subtitle="Select a hero to learn more" />
       
-      <FormControl variant="outlined" sx={{ ml: 8, minWidth: 200, backgroundColor: "rgba(120, 79, 223, 0.15)", maxWidth: 250  }}>
+      <FormControl variant="outlined" sx={{ ml: 8, minWidth: 200, backgroundColor: "rgba(120, 79, 277, 0.15)", maxWidth: 250  }}>
         <InputLabel htmlFor="role-filter">Filter by Role</InputLabel>
         <Select
           value={selectedRole}
@@ -97,12 +97,12 @@ const Heros = () => {
           alignItems="center"
         >
           {filteredHeroes.map((hero) => (
-            <Grid item key={hero.id} xs={6} sm={4} md={3} lg={2}>
+            <Grid item key={hero.id} xs={11} sm={5.6} md={3.7} lg={2.8} xl={1.87} m={1}>
               <Card
                 elevation={10}
                 onClick={handleCardClick(hero)}
                 sx={{
-                  backgroundColor: "rgba(120, 79, 223, 0.15)",
+                  backgroundColor: "rgba(120, 79, 277, 0.15)",
                   border: "1px solid #e1e2fe",
                   width: "100%",
                   height: "100%",

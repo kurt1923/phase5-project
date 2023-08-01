@@ -12,13 +12,12 @@ import {
 } from "@mui/material";
 import { tokens } from "./theme";
 import Header from "./Header";
-import { Formik, Form, FieldArray } from "formik";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import React, { useContext } from "react";
 import { MyContext } from "./MyContext";
-import background from "./pics/predwallpaper1.jpg";
+import background from "./pics/drongo.jpg";
 import ItemsComp from "./ItemsComp";
 import BuildItems from "./BuildItems";
 import image from "./pics/Gideon.webp";
@@ -41,11 +40,13 @@ const Mybuilds = () => {
     currentBuild,
     setCurrentBuild,
     setEditingBuild,
-    handleBuildEdit
+    handleBuildEdit,
+    handleDeleteBuild,
+    items
   } = useContext(MyContext);
   const navigate = useNavigate();
   // array that matches the current user id
-  const findUserBuilds = builds.filter((build) => build.user_id === user.id);
+  const findUserBuilds = user.builds;
 
   const handleCardClick = (build) => () => {
     setEditingBuild(false);
@@ -141,6 +142,7 @@ console.log(user.builds)
         if (res.ok) {
           res.json().then((updatedBuild) => {
             handleBuildEdit(updatedBuild);
+            console.log(build.build_items)
           });
         } else {
           res.json().then((json) => {
@@ -164,7 +166,7 @@ console.log(user.builds)
     })
       .then((res) => {
         if (res.ok) {
-          handleBuildEdit(build);
+          handleDeleteBuild(build.id);
         } else {
           res.json().then((json) => {
             console.log(json);
@@ -176,6 +178,7 @@ console.log(user.builds)
       });
   }
 }
+// console.log(findUserBuilds[11])
 
   return (
     <Box
@@ -194,7 +197,7 @@ console.log(user.builds)
         overflow: "scroll",
       }}
     >
-      <Header title="My Builds" subtitle="Select one of your builds" />
+      <Header title="My Builds" subtitle={user.builds.length === 0 ? "Go to Create Build to get Started " : "Select one of your builds"} />
       <Box
         position="relative"
         backgroundColor="rgba(0, 0, 0, 0.5)"
@@ -209,14 +212,14 @@ console.log(user.builds)
           justifyContent="flex-start"
           alignItems="center"
         >
-          {findUserBuilds.map((build) => (
-            <Grid item key={build.id} xs={11} sm={5.6} md={3.7} lg={2.8} xl={1.87} m={1}>
+          {user.builds.map((build) => (
+            <Grid item key={build.id} xs={15} sm={5.4} md={3.7} lg={2.8} xl={2.27} m={1}>
               <Card
                 key={build.id}
                 elevation={20}
                 onClick={handleCardClick(build)}
                 sx={{
-                  backgroundColor: "rgba(120, 79, 223, 0.15)",
+                  backgroundColor: "rgba(255, 125, 0, .1)",
                   border: "1px solid #e1e2fe",
                   width: "100%",
                   height: "100%",
@@ -247,14 +250,14 @@ console.log(user.builds)
                       color: colors.primary[100],
                       fontWeight: "bold",
                     }}
-                    variant="h4"
+                    variant="h3"
                   >
                     {build.hero}
                   </Typography>
                   <Typography
                     style={{
                       color: colors.grey[100],
-                      fontSize: "14px",
+                      fontSize: "16px",
                       textTransform: "uppercase",
                     }}
                     variant="subtitle2"
@@ -262,6 +265,44 @@ console.log(user.builds)
                     {build.title}
                   </Typography>
                 </CardContent>
+                {/* i want these items to run horizontal below the name and title and small sized */}
+                <Box
+                  display="flex"
+                  justifyContent="center"
+                  mt={1}
+                  flexWrap="wrap"
+                >
+                  {build.build_items.map((build_item, index) => {
+                    const item = items.find((item) => item.id === build_item.item_id);
+                    return (
+                      <Box
+                        key={index}
+                        width={48} // Set the width of each build item
+                        height={48} // Set the height of each build item
+                        mr={.2} 
+                        mb={2}
+                      >
+                        {item ? (
+                          <CardMedia
+                            component="img"
+                            image={item.image_url}
+                            alt={item.name}
+                            sx={{
+                              width: "100%",
+                              height: "100%",
+                              objectFit: "cover",
+                              borderRadius: "5px",
+                            }}
+                          />
+                        ) : (
+                          null
+                        )}
+                      </Box>
+                    );
+                  })}
+                </Box>
+
+                    
                 <Box display="flex" justifyContent="space-between" mt={0} flexWrap="wrap">
                   <IconButton
                     onClick={(event) => {

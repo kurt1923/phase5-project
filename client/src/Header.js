@@ -14,10 +14,20 @@ const Header = ({ title, subtitle }) => {
         color={colors.grey[100]}
         fontWeight="bold"
         sx={{ m: "0px 0 5px 0" }}
+        style={{
+          textShadow: "0 0 10px rgba(255, 151, 0, 1)",
+        }}
       >
         {title}
       </Typography>
-      <Typography variant="h3" color={colors.grey[700]}>
+      <Typography
+        variant="h3"
+        color={colors.grey[100]}
+        style={{
+          textShadow: "0 0 10px rgba(255, 151, 0, 1)",
+          textTransform: "uppercase"
+        }}
+      >
         {subtitle}
       </Typography>
     </Box>

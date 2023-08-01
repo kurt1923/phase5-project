@@ -6,7 +6,6 @@ import {
   Card,
   CardMedia,
 } from "@mui/material";
-import image from "./pics/countess.webp";
 import React, { useContext, useState } from "react";
 import { MyContext } from "./MyContext";
 
@@ -78,8 +77,8 @@ const BuildItems = ({
         <Grid
           container
           spacing={2}
-          mr={8}
-          ml={8}
+          mr={1}
+          ml={1}
           sx={{ justifyContent: "center", flexWrap: "wrap" }}
         >
           {currentBuildItems.map((buildItem, index) => {
@@ -115,9 +114,6 @@ const BuildItems = ({
                     }}
                   >
                     <CardContent align="center">
-                      {/* <Typography style={{ color: "#ffffff" }}>
-                      {item.name}
-                    </Typography> */}
                       <CardMedia
                         component="img"
                         image={item.image_url}
@@ -142,26 +138,27 @@ const BuildItems = ({
                       </Typography>
                       {/* Render additional item data */}
                       <Box
-                        sx={{
-                          backgroundColor: "#ffffff",
-                          color: "#000000",
-                          padding: "10px",
-                          borderRadius: "4px",
-                          position: "absolute",
-                          top: "100%", // Position above the card
-                          left: "-100%",
-                          zIndex: hoveredItemId === item.id ? 1 : -1, // Show on top only when hovered
-                          opacity: hoveredItemId === item.id ? 1 : 0, // Show or hide based on hover state
-                          pointerEvents:
-                            hoveredItemId === item.id ? "auto" : "none", // Enable or disable hover events
-                          transition: "opacity 0.3s ease", // Add a transition effect
-                          textTransform: "capitalize", // Capitalize attribute keys
-                          whiteSpace: "pre-line", // Render new line characters as line breaks
-                          textAlign: "left",
-                          width: "300px", //was 100%
-                          overflow: "auto",
-                          zIndex: 99999, // Allow hover box to overflow card boundaries
-                        }}
+                      sx={{
+                        backgroundColor: "rgba(0, 0, 0, 0.92)",
+                        color: "white",
+                        padding: "10px",
+                        fontFamily: "Segoe UI",
+                        borderRadius: "4px",
+                        position: "absolute",
+                        top: "100%", // Position above the card
+                        left: "-100%",
+                        zIndex: hoveredItemId === item.id ? 1 : -1, // Show on top only when hovered
+                        opacity: hoveredItemId === item.id ? 1 : 0, // Show or hide based on hover state
+                        pointerEvents:
+                          hoveredItemId === item.id ? "auto" : "none", // Enable or disable hover events
+                        transition: "opacity 0.3s ease", // Add a transition effect
+                        textTransform: "capitalize", // Capitalize attribute keys
+                        whiteSpace: "pre-line", // Render new line characters as line breaks
+                        textAlign: "left",
+                        width: "300px", //was 100%
+                        overflow: "auto",
+                        zIndex: 99999, // Allow hover box to overflow card boundaries
+                      }}
                       >
                         {/* Render additional item data */}
                         {Object.entries(item).map(([key, value]) => {
