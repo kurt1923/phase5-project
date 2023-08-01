@@ -9,11 +9,12 @@ A single page app that allows people who play the video game "Predecessor" to ma
 To run the application locally, follow these steps:
 
 1. First, ensure you have Ruby on Rails and Node.js installed on your system.
-2. Clone the repository from GitHub:
-3. Change into the application directory:
-4. Install Ruby and Rails dependencies:
-5. Change into the client directory:
-6. Install Node.js dependencies:
+2. Clone the repository from GitHub: https://github.com/kurt1923/phase5-project.git
+3. Change into the application directory: cd phase5-project
+4. Install Ruby and Rails dependencies: bundle install
+5. Change into the client directory: cd client
+6. Install Node.js dependencies: npm install
+7. Migrate and seed ITEMS and HEROS. 
 ## Usage
 
 The app allows both non-logged-in and logged-in users to interact with it in different ways:
