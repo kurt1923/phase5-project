@@ -1,24 +1,49 @@
-# README
+# Predecessor Build Calculator
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+A single page app that allows people who play the video game "Predecessor" to make customized builds for the characters and access them anytime on the fly.
 
-Things you may want to cover:
+- Youtube https://www.youtube.com/watch?v=wMSfwIQtXp4
 
-* Ruby version
+## Installation and Instructions
 
-* System dependencies
+To run the application locally, follow these steps:
 
-* Configuration
+1. First, ensure you have Ruby on Rails and Node.js installed on your system.
+2. Clone the repository from GitHub:
+3. Change into the application directory:
+4. Install Ruby and Rails dependencies:
+5. Change into the client directory:
+6. Install Node.js dependencies:
+## Usage
 
-* Database creation
+The app allows both non-logged-in and logged-in users to interact with it in different ways:
 
-* Database initialization
+- Non-logged-in users can:
+- View all the Predecessor heroes and game items.
+- Logged-in users can:
+- Create, edit, and manage builds for the characters.
+- Log their wins and losses for different builds.
+- Access a dashboard that displays all their builds and sort them accordingly.
 
-* How to run the test suite
+## Technologies
 
-* Services (job queues, cache servers, search engines, etc.)
+The Predecessor Build Calculator is built using the following technologies:
 
-* Deployment instructions
+- React (Frontend)
+- Ruby on Rails (Backend)
+- Postgres (Database)
+- Active Record (ORM)
+- Active Storage (File uploads)
+- Splide (Carousel/slider library)
+- MUI (Material-UI for React)
 
-* ...
+## Contributing
+
+Contributions to the project are welcome. If you'd like to contribute, you can:
+
+- Added Ometa and Predecessor game images, hero and item data to enhance the app's content.
+
+## Contact
+
+For any questions or feedback, you can reach out on GitHub:
+- GitHub: [kurt1923](https://github.com/kurt1923)
