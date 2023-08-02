@@ -81,4 +81,8 @@ test:
 #
 production:
   <<: *default
-  url: <%= ENV['DATABASE_URL'] %>
+  database: phase5_database_akiq
+  username: phase5_database_akiq_user
+  password: lbtJwI7rhyZFl9uksy7r8dDa6u4Vlo2n
+  host: dpg-cid1jkp5rnuhheudt3t0-a.oregon-postgres.render.com
+  port: 5432
