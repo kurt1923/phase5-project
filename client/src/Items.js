@@ -1,6 +1,5 @@
 import { Box, useTheme } from "@mui/material";
 import { MyContext } from "./MyContext";
-import { tokens } from "./theme";
 import ItemsComp from "./ItemsComp";
 import { useContext } from "react";
 import Header from "./Header";
@@ -9,9 +8,7 @@ import React, { useState } from "react";
 
 const Items = () => {
   const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
   const { isCollapsed } = useContext(MyContext);
-  // const [isItemsList, setIsItemsList] = useState(true); //maybe a boolean for styling?
   const [selectedItemIds, setSelectedItemIds] = useState([]);
 
   const handleCardClick = (itemId) => {

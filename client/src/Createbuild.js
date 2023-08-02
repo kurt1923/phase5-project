@@ -11,7 +11,7 @@ import Header from "./Header";
 import { Formik, Form } from "formik";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import React, { useContext } from "react";
 import { MyContext } from "./MyContext";
 import background from "./pics/revenant.jpg";
@@ -39,11 +39,10 @@ const Createbuild = () => {
     setUser
   } = useContext(MyContext);
   const [selectedItemIds, setSelectedItemIds] = useState([]);
-  const navigate = useNavigate();
   const [error, setError] = useState([]);
   const [selectedBuildItem, setSelectedBuildItem] = useState([]);
   const noBuild = currentBuild.length === 0;
-  const findCurrentBuild = builds.find((build) => build.id == currentBuild);
+  const findCurrentBuild = builds.find((build) => build.id === currentBuild);
   console.log(currentBuild);
   console.log(findCurrentBuild);
   const initialValues = noBuild

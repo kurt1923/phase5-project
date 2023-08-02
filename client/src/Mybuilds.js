@@ -2,9 +2,6 @@ import {
   Box,
   Typography,
   useTheme,
-  Button,
-  TextField,
-  MenuItem,
   Grid,
   CardContent,
   Card,
@@ -14,12 +11,9 @@ import { tokens } from "./theme";
 import Header from "./Header";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
 import React, { useContext } from "react";
 import { MyContext } from "./MyContext";
 import background from "./pics/drongo.jpg";
-import ItemsComp from "./ItemsComp";
-import BuildItems from "./BuildItems";
 import image from "./pics/Gideon.webp";
 import {
   FavoriteBorderOutlined,

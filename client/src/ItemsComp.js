@@ -3,7 +3,6 @@ import {
   useTheme,
   Button,
   TextField,
-  MenuItem,
   FormControlLabel,
   Checkbox,
   Grid,
@@ -13,13 +12,10 @@ import {
   CardMedia,
 } from "@mui/material";
 import { MyContext } from "./MyContext";
-import { tokens } from "./theme";
 import { useContext } from "react";
 import React, { useState } from "react";
 
 const ItemsComp = ({ handleCardClick, selectedItemIds, isItemsList }) => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
   const { items, user } = useContext(MyContext);
   const [hoveredItemId, setHoveredItemId] = useState(null);
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -295,7 +291,7 @@ const ItemsComp = ({ handleCardClick, selectedItemIds, isItemsList }) => {
                         textAlign: "left",
                         width: "300px", //was 100%
                         overflow: "auto",
-                        zIndex: 99999, // Allow hover box to overflow card boundaries
+                      
                       }}
                     >
                       {/* Render additional item data */}

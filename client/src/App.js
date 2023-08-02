@@ -13,13 +13,12 @@ import Mybuilds from "./Mybuilds";
 import Heros from "./Heros"
 import HeroPage from "./HeroPage"
 import UserDash from "./UserDash"
-import { Home } from "@mui/icons-material";
 import HomePage from "./Home";
 
 
 function App() {
   const [theme, colorMode] = useMode();
-  const { user, builds, selectedHero } = useContext(MyContext);
+  const { user } = useContext(MyContext);
   console.log(user)
 
   return (

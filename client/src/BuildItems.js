@@ -157,7 +157,6 @@ const BuildItems = ({
                         textAlign: "left",
                         width: "300px", //was 100%
                         overflow: "auto",
-                        zIndex: 99999, // Allow hover box to overflow card boundaries
                       }}
                       >
                         {/* Render additional item data */}

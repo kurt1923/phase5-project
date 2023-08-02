@@ -1,14 +1,11 @@
 import {
   Grid,
-  Card,
-  CardContent,
   Typography,
   Button,
-  CardMedia,
   Box,
 } from "@mui/material";
 import image from "./pics/Gideon.webp";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import { MyContext } from "./MyContext";
 import { useNavigate } from "react-router-dom";
 

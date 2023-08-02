@@ -9,7 +9,7 @@ import { MyContext } from "../MyContext";
 const Statbox = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const { user, builds, heros, displayFavoriteHeroImage } =
+  const { user, displayFavoriteHeroImage } =
     useContext(MyContext);
   const userBuilds = user.builds;
 

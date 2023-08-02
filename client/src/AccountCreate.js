@@ -17,7 +17,7 @@ const AccountCreate = () => {
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
   const [error, setError] = useState(null);
-  const { isCollapsed, setUser, user, heros } = useContext(MyContext);
+  const { isCollapsed, setUser, heros } = useContext(MyContext);
   const initialValues = {
     username: "",
     email: "",

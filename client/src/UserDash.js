@@ -1,10 +1,8 @@
 import {
   Grid,
-  Paper,
   Box,
   Card,
   CardContent,
-  CardMedia,
   Typography,
   useTheme,
 } from "@mui/material";
@@ -12,14 +10,13 @@ import background from "./pics/kira.jpg";
 import React, { useContext } from "react";
 import { MyContext } from "./MyContext";
 import Header from "./Header";
-import placeholder from "./pics/logo.png";
 import { tokens } from "./theme";
 import Statbox from "./DashComp/Statbox";
 
 const UserDash = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const { isCollapsed, user, builds, heros, displayFavoriteHeroImage } =
+  const { isCollapsed, user, displayFavoriteHeroImage } =
     useContext(MyContext);
 
   const userBuilds = user.builds;

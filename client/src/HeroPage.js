@@ -2,20 +2,15 @@ import { useParams } from "react-router-dom";
 import {
   Box,
   Typography,
-  useTheme,
   Paper,
-  TextField,
-  MenuItem,
   Grid,
   styled,
   tooltipClasses,
   CardMedia,
   Tooltip,
 } from "@mui/material";
-import { tokens } from "./theme";
 import Header from "./Header";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { useNavigate } from "react-router-dom";
 import React, { useContext, useEffect, useState } from "react";
 import { MyContext } from "./MyContext";
 import background from "./pics/morighesh.jpg";
@@ -37,7 +32,7 @@ const LightTooltip = styled(({ className, ...props }) => (
 }));
 
 const HeroPage = () => {
-  const { user, heros, isCollapsed, selectedHero, setSelectedHero } =
+  const { isCollapsed, selectedHero, setSelectedHero } =
     useContext(MyContext);
   const { id } = useParams();
   const isNonMobile = useMediaQuery("(min-width:800px)");

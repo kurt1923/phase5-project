@@ -2,8 +2,6 @@ import {
   Box,
   Typography,
   useTheme,
-  Button,
-  TextField,
   MenuItem,
   Grid,
   CardContent,
@@ -15,7 +13,6 @@ import {
 } from "@mui/material";
 import { tokens } from "./theme";
 import Header from "./Header";
-import { Formik, Form, FieldArray } from "formik";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -28,7 +25,7 @@ const Heros = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const isNonMobile = useMediaQuery("(min-width:700px)");
-  const { user, isCollapsed, heros, selectedHero, setSelectedHero } = useContext(
+  const { isCollapsed, heros, setSelectedHero } = useContext(
     MyContext
   );
   const navigate = useNavigate();
