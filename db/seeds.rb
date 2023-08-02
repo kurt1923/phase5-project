@@ -1,10 +1,4 @@
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Examples:
-#type
-#   movies = Movie.create([{ name: "Star Wars" }, { name: "Lord of the Rings" }])
-#   Character.create(name: "Luke", movie: movies.first)
+
 
 require 'faker'
 
@@ -26,46 +20,7 @@ User.create([
 
 puts "🌱  users..."
 
-Build.create([
-    {
-        title: "My First Build",
-        hero: "Gideon",
-        info: "This is my first build",
-        user_id: User.first.id,
-        wins: 0,
-        losses: 0,
-        favorites: false
-    },
-    {
-        title: "My Second Build",
-        hero: "Gadget",
-        info: "This is my second build",
-        user_id: User.first.id,
-        wins: 0,
-        losses: 0,
-        favorites: false
-    },
-    {
-        title: "My Third Build",
-        hero: "Murdock",
-        info: "This is my third build",
-        user_id: User.first.id,
-        wins: 0,
-        losses: 0,
-        favorites: false
-    },
-    {
-        title: "My Fourth Build",
-        hero: "Feng Mao",
-        info: "This is my fourth build",
-        user_id: User.first.id,
-        wins: 0,
-        losses: 0,
-        favorites: false
-    }
-])
 
-puts "🌱  builds..."
 
 heroes_data = [
     {
@@ -510,8 +465,13 @@ Hero.all.each do |hero|
   hero.image.attach(io: file, filename: "#{hero.name.parameterize}.jpg", content_type: 'image/jpeg')
 end
 
+
+
 puts "🌱  heros..."
-Item.create([
+
+
+
+items_data = [
     {
         name: "Overlord",
         classification: "Tier 3",
@@ -3260,8 +3220,15 @@ Item.create([
         omnivamp: 0,
         image_url: "https://predecessor.s3.us-east-2.amazonaws.com/Items/nex.png"
     }
-])
+]
 
+items_data.each { |item_data| Item.create(item_data) }
+
+# # Attach images to the heroes using Active Storage
+Item.all.each do |item|
+  file = URI.open(item.image_url)
+  item.image.attach(io: file, filename: "#{item.name.parameterize}.jpg", content_type: 'image/jpeg')
+end
 puts "Items created"
 
 

@@ -38,7 +38,7 @@ const Heros = () => {
     setSelectedHero(hero);
   };
   
-
+// console.log(heros[1].image)
   const filteredHeroes = selectedRole === "All" ? heros : heros.filter((hero) => hero.role.includes(selectedRole));
 
   return (
